@@ -3,14 +3,13 @@ package com.example.demo.entrypoints;
 import com.example.demo.ProjectMongoContainer;
 import com.example.demo.core.domain.Member;
 import com.example.demo.core.domain.MemberId;
-import com.example.demo.infrastructure.MemberMongoSpringRepository;
+import com.example.demo.core.domain.MemberRepository;
 import com.example.demo.infrastructure.UUIDGenerator;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,11 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MongoDBContainer;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles({"tc", "tc-auto"})
@@ -36,7 +34,7 @@ class MemberControllerTest {
     public static MongoDBContainer mongoDBContainer = ProjectMongoContainer.getInstance();
 
     @Autowired
-    private MemberMongoSpringRepository memberMongoSpringRepository;
+    private MemberRepository memberRepository;
 
     @MockBean
     private UUIDGenerator uuidGenerator;
@@ -74,9 +72,9 @@ class MemberControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expected);
 
-        List<Member> allMembers = memberMongoSpringRepository.findAll();
-        assertThat(allMembers).hasSize(1);
-        assertThat(allMembers.get(0)).usingRecursiveComparison().isEqualTo(new Member(new MemberId(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5")), "Jean", "Dupond", "jean.dupond@somemail.com", 5));
+        assertThat(memberRepository.countAll()).isEqualTo(1);
+        MemberId id = new MemberId(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5"));
+        assertThat(memberRepository.findById(id).get()).usingRecursiveComparison().isEqualTo(new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5));
     }
 
     @Test
@@ -91,8 +89,6 @@ class MemberControllerTest {
 
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
-        List<Member> allMembers = memberMongoSpringRepository.findAll();
-        assertThat(allMembers).hasSize(1);
+        assertThat(memberRepository.countAll()).isEqualTo(1);
     }
 }

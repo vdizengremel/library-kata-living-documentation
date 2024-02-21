@@ -5,6 +5,8 @@ import com.example.demo.core.domain.MemberId;
 import com.example.demo.core.domain.MemberRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class MemberAdapter implements MemberRepository {
     private final MemberMongoSpringRepository memberMongoSpringRepository;
@@ -28,5 +30,15 @@ public class MemberAdapter implements MemberRepository {
     @Override
     public boolean existsWithEmail(String email) {
         return memberMongoSpringRepository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<Member> findById(MemberId id) {
+        return memberMongoSpringRepository.findById(id);
+    }
+
+    @Override
+    public long countAll() {
+        return memberMongoSpringRepository.count();
     }
 }
