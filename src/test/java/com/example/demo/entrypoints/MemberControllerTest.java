@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles({"tc", "tc-auto"})
+//@ActiveProfiles({"tc", "tc-auto"})
 class MemberControllerTest {
     @Autowired
     private TestRestTemplate template;
