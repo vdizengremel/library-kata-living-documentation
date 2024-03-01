@@ -3,9 +3,14 @@ package com.example.demo.infrastructure;
 import com.example.demo.core.domain.Member;
 import com.example.demo.core.domain.MemberId;
 import com.example.demo.core.domain.MemberRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
+@Profile("inMemoryRepository")
 public class MemberInMemoryRepository implements MemberRepository {
     private final Map<MemberId, Member> membersById;
 

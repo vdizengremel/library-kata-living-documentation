@@ -1,23 +1,22 @@
 package com.example.demo.entrypoints;
 
-import com.example.demo.ProjectMongoContainer;
 import com.example.demo.core.domain.Member;
 import com.example.demo.core.domain.MemberId;
 import com.example.demo.core.domain.MemberRepository;
 import com.example.demo.infrastructure.UUIDGenerator;
-import org.junit.ClassRule;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.MongoDBContainer;
 
 import java.util.UUID;
 
@@ -25,29 +24,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@ActiveProfiles({"tc", "tc-auto"})
+@ActiveProfiles({"inMemoryRepository"})
+@SpringBootApplication(exclude = {
+        MongoAutoConfiguration.class,
+        MongoDataAutoConfiguration.class
+})
+@ComponentScan(basePackages = "com.example.demo")
 class MemberControllerTest {
     @Autowired
     private TestRestTemplate template;
-
-    @ClassRule
-    public static MongoDBContainer mongoDBContainer = ProjectMongoContainer.getInstance();
 
     @Autowired
     private MemberRepository memberRepository;
 
     @MockBean
     private UUIDGenerator uuidGenerator;
-
-    @BeforeAll
-    static void beforeAll() {
-        mongoDBContainer.start();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        mongoDBContainer.stop();
-    }
 
     @BeforeEach
     void setUp() {
@@ -75,6 +66,9 @@ class MemberControllerTest {
         assertThat(memberRepository.countAll()).isEqualTo(1);
         MemberId id = new MemberId(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5"));
         assertThat(memberRepository.findById(id).get()).usingRecursiveComparison().isEqualTo(new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5));
+        assertThat(memberRepository.findById(id)).hasValueSatisfying(member -> {
+            assertThat(member).usingRecursiveComparison().isEqualTo(new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5));
+        });
     }
 
     @Test
@@ -86,7 +80,6 @@ class MemberControllerTest {
 
         template.postForEntity("/member/", addMemberRequestBodyDTO, AddMemberResponseBodyDTO.class);
         ResponseEntity<AddMemberResponseBodyDTO> response = template.postForEntity("/member/", addMemberRequestBodyDTO, AddMemberResponseBodyDTO.class);
-
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(memberRepository.countAll()).isEqualTo(1);
