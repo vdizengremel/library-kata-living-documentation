@@ -1,7 +1,9 @@
 package com.example.demo.core.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 public class Member {
     @Getter
     private final MemberId id;

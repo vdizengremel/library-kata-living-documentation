@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public abstract class MemberRepositoryTest {
+public abstract class AbstractMemberRepositoryTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
@@ -19,6 +19,14 @@ public abstract class MemberRepositoryTest {
     }
 
     abstract MemberRepository getMemberRepository();
+
+    @Test
+    void shouldGenerateIds() {
+        var firstId = memberRepository.generateNewId();
+        var secondId = memberRepository.generateNewId();
+
+        assertThat(firstId.value()).isNotEqualTo(secondId.value());
+    }
 
     @Test
     void shouldAddMember() {

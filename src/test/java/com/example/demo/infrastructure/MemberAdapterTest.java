@@ -11,15 +11,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.testcontainers.containers.MongoDBContainer;
 
 @SpringBootTest
-public class MemberAdapterTest extends MemberRepositoryTest {
+public class MemberAdapterTest extends AbstractMemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
     @ClassRule
     public static MongoDBContainer mongoDBContainer = ProjectMongoContainer.getInstance();
-
-    @MockBean
-    private UUIDGenerator uuidGenerator;
 
     @BeforeAll
     static void beforeAll() {
