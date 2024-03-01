@@ -7,11 +7,11 @@ import com.example.demo.infrastructure.MemberInMemoryRepository;
 import lombok.Builder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AddMemberUseCaseTest {
     private AddMemberUseCase addMemberUseCase;
@@ -26,10 +26,10 @@ public class AddMemberUseCaseTest {
     @Test
     void shouldPresentCreatedMember_WhenMemberDoesNotExist() {
         AddMemberUseCaseCommandForTest addMemberUseCaseCommand = AddMemberUseCaseCommandForTest.builder().firstName("firstname").build();
-        String result = addMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
+        Member result = addMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
 
         Member member = getFirstCreatedMember();
-        assertThat(result).isEqualTo(member.toString());
+        assertThat(result).usingRecursiveComparison().isEqualTo(member);
     }
 
     @Test
@@ -48,9 +48,8 @@ public class AddMemberUseCaseTest {
         var secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail = builder.build();
 
         addMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
-        String result = addMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest());
-
-        assertThat(result).isEqualTo("AnotherMemberExistsWithSameEmail");
+        assertThatThrownBy(() -> addMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest()))
+                .hasMessage("AnotherMemberExistsWithSameEmail");
     }
 
     @Test
@@ -58,16 +57,16 @@ public class AddMemberUseCaseTest {
         var builder = AddMemberUseCaseCommandForTest.builder().firstName("Jean").lastName("Dupond").email("jean.dupond@any.com");
         var firstAddMemberUseCaseCommandToCreateMember = builder.build();
 
-        String addedResult = addMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
+        Member addedResult = addMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
 
         var secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail = builder.firstName("Paul").build();
-        addMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest());
+        assertThatThrownBy(() -> addMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest()));
 
         var count = memberRepository.countAll();
         assertThat(count).isEqualTo(1);
 
         Member member = getFirstCreatedMember();
-        assertThat(addedResult).isEqualTo(member.toString());
+        assertThat(addedResult).usingRecursiveComparison().isEqualTo(member);
     }
 
     @NotNull
@@ -84,16 +83,16 @@ public class AddMemberUseCaseTest {
         private String email;
     }
 
-    static class AddMemberUseCasePresenterForTest implements AddMemberUseCase.AddMemberUseCasePresenter<String> {
+    static class AddMemberUseCasePresenterForTest implements AddMemberUseCase.AddMemberUseCasePresenter<Member> {
 
         @Override
-        public String presentCreatedMember(Member createdMember) {
-            return createdMember.toString();
+        public Member presentCreatedMember(Member createdMember) {
+            return createdMember;
         }
 
         @Override
-        public String presentAnotherMemberExistsWithSameEmail() {
-            return "AnotherMemberExistsWithSameEmail";
+        public Member presentAnotherMemberExistsWithSameEmail() {
+            throw new RuntimeException("AnotherMemberExistsWithSameEmail", new Throwable());
         }
     }
 }
