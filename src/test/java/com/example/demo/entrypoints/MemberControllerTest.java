@@ -54,20 +54,22 @@ class MemberControllerTest {
 
         ResponseEntity<AddMemberResponseBodyDTO> response = template.postForEntity("/member/", addMemberRequestBodyDTO, AddMemberResponseBodyDTO.class);
 
-        AddMemberResponseBodyDTO expected = new AddMemberResponseBodyDTO();
-        expected.id = "001b0068-1eb5-4c65-85c4-1b1eb788ecd5";
-        expected.firstName = "Jean";
-        expected.lastName = "Dupond";
-        expected.email = "jean.dupond@somemail.com";
+        AddMemberResponseBodyDTO expectedBody = new AddMemberResponseBodyDTO();
+        expectedBody.id = "001b0068-1eb5-4c65-85c4-1b1eb788ecd5";
+        expectedBody.firstName = "Jean";
+        expectedBody.lastName = "Dupond";
+        expectedBody.email = "jean.dupond@somemail.com";
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedBody);
 
         assertThat(memberRepository.countAll()).isEqualTo(1);
+
         MemberId id = new MemberId(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5"));
-        assertThat(memberRepository.findById(id).get()).usingRecursiveComparison().isEqualTo(new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5));
+
         assertThat(memberRepository.findById(id)).hasValueSatisfying(member -> {
-            assertThat(member).usingRecursiveComparison().isEqualTo(new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5));
+            Member expectedMember = new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5);
+            assertThat(member).usingRecursiveComparison().isEqualTo(expectedMember);
         });
     }
 
