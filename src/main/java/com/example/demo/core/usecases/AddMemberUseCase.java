@@ -2,7 +2,6 @@ package com.example.demo.core.usecases;
 
 import com.example.demo.core.domain.Member;
 import com.example.demo.core.domain.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +14,7 @@ public class AddMemberUseCase {
 
     public <T> T execute(AddMemberUseCaseCommand command, AddMemberUseCasePresenter<T> presenter) {
         if(memberRepository.existsWithEmail(command.getEmail())) {
-            return presenter.presentAnotherMemberExistsWithSameEmail();
+            return presenter.presentErrorAnotherMemberExistsWithSameEmail();
         }
 
         var member = new Member(
@@ -27,7 +26,7 @@ public class AddMemberUseCase {
         );
 
         memberRepository.add(member);
-        return presenter.presentCreatedMember(member);
+        return presenter.presentAddedMember(member);
     }
 
    public interface AddMemberUseCaseCommand {
@@ -39,7 +38,7 @@ public class AddMemberUseCase {
     }
 
     public interface AddMemberUseCasePresenter<T> {
-        T presentCreatedMember(Member createdMember);
-        T presentAnotherMemberExistsWithSameEmail();
+        T presentAddedMember(Member addedMember);
+        T presentErrorAnotherMemberExistsWithSameEmail();
     }
 }

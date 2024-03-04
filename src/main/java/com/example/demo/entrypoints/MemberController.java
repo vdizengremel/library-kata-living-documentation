@@ -24,14 +24,14 @@ public class MemberController {
     static class AddMemberUseCaseHttpPresenter implements AddMemberUseCase.AddMemberUseCasePresenter<AddMemberResponseBodyDTO> {
 
         @Override
-        public AddMemberResponseBodyDTO presentCreatedMember(Member createdMember) {
+        public AddMemberResponseBodyDTO presentAddedMember(Member addedMember) {
             AddMemberResponseBodyDTO responseBodyDTO = new AddMemberResponseBodyDTO();
-            createdMember.provideInterest(responseBodyDTO);
+            addedMember.provideInterest(responseBodyDTO);
             return responseBodyDTO;
         }
 
         @Override
-        public AddMemberResponseBodyDTO presentAnotherMemberExistsWithSameEmail() {
+        public AddMemberResponseBodyDTO presentErrorAnotherMemberExistsWithSameEmail() {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another member with same email exists");
         }
     }

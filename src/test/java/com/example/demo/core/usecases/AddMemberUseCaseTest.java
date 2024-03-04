@@ -86,12 +86,12 @@ public class AddMemberUseCaseTest {
     static class AddMemberUseCasePresenterForTest implements AddMemberUseCase.AddMemberUseCasePresenter<Member> {
 
         @Override
-        public Member presentCreatedMember(Member createdMember) {
-            return createdMember;
+        public Member presentAddedMember(Member addedMember) {
+            return addedMember;
         }
 
         @Override
-        public Member presentAnotherMemberExistsWithSameEmail() {
+        public Member presentErrorAnotherMemberExistsWithSameEmail() {
             throw new RuntimeException("AnotherMemberExistsWithSameEmail", new Throwable());
         }
     }
