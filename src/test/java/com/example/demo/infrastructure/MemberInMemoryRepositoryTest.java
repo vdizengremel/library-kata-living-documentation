@@ -1,11 +1,8 @@
 package com.example.demo.infrastructure;
 
-import com.example.demo.core.domain.Member;
-import com.example.demo.core.domain.MemberId;
-import com.example.demo.core.domain.MemberRepository;
+import com.example.demo.core.domain.member.Member;
+import com.example.demo.core.domain.member.MemberRepository;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +15,7 @@ public class MemberInMemoryRepositoryTest extends AbstractMemberRepositoryTest {
     @Test
     void shouldCopyDataWhenReturningIt() {
         MemberRepository memberRepository = getMemberRepository();
-        var memberId = new MemberId(MemberInMemoryRepository.UUIDS.getFirst());
+        var memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
         Member addedMember = new Member(memberId, "", "", "", 5);
         memberRepository.add(addedMember);
 

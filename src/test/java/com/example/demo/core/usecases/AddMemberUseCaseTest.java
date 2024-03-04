@@ -1,8 +1,7 @@
 package com.example.demo.core.usecases;
 
-import com.example.demo.core.domain.Member;
-import com.example.demo.core.domain.MemberId;
-import com.example.demo.core.domain.MemberRepository;
+import com.example.demo.core.domain.member.Member;
+import com.example.demo.core.domain.member.MemberRepository;
 import com.example.demo.infrastructure.MemberInMemoryRepository;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +37,7 @@ public class AddMemberUseCaseTest {
         addMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
 
         Member actual = getFirstCreatedMember();
-        assertThat(actual).usingRecursiveComparison().isEqualTo(new Member(new MemberId(MemberInMemoryRepository.UUIDS.getFirst()), "Jean", "Dupond", "jean.dupond@any.com", 5));
+        assertThat(actual).usingRecursiveComparison().isEqualTo(new Member(MemberInMemoryRepository.MEMBER_IDS.getFirst(), "Jean", "Dupond", "jean.dupond@any.com", 5));
     }
 
     @Test
@@ -71,7 +70,7 @@ public class AddMemberUseCaseTest {
 
     @NotNull
     private Member getFirstCreatedMember() {
-        var createdMember = memberRepository.findById(new MemberId(MemberInMemoryRepository.UUIDS.getFirst()));
+        var createdMember = memberRepository.findById(MemberInMemoryRepository.MEMBER_IDS.getFirst());
         return createdMember.orElseThrow(() -> new RuntimeException("No created member"));
     }
 

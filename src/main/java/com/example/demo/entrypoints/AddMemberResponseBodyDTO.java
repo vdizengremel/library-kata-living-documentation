@@ -1,6 +1,6 @@
 package com.example.demo.entrypoints;
 
-import com.example.demo.core.domain.Member;
+import com.example.demo.core.domain.member.Member;
 import lombok.Setter;
 
 @Setter

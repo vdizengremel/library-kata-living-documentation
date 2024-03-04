@@ -1,7 +1,7 @@
 package com.example.demo.core.usecases;
 
-import com.example.demo.core.domain.Member;
-import com.example.demo.core.domain.MemberRepository;
+import com.example.demo.core.domain.member.Member;
+import com.example.demo.core.domain.member.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service

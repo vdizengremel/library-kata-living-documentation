@@ -1,4 +1,4 @@
-package com.example.demo.core.domain;
+package com.example.demo.core.domain.member;
 
 import lombok.Getter;
 

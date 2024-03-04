@@ -1,13 +1,12 @@
 package com.example.demo.infrastructure;
 
 import com.example.demo.ProjectMongoContainer;
-import com.example.demo.core.domain.MemberRepository;
+import com.example.demo.core.domain.member.MemberRepository;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.testcontainers.containers.MongoDBContainer;
 
 @SpringBootTest

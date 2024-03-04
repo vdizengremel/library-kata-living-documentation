@@ -1,8 +1,7 @@
 package com.example.demo.entrypoints;
 
-import com.example.demo.core.domain.Member;
+import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.usecases.AddMemberUseCase;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

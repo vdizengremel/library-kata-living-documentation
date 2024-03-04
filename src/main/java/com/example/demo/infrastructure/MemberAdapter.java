@@ -1,8 +1,8 @@
 package com.example.demo.infrastructure;
 
-import com.example.demo.core.domain.Member;
-import com.example.demo.core.domain.MemberId;
-import com.example.demo.core.domain.MemberRepository;
+import com.example.demo.core.domain.member.Member;
+import com.example.demo.core.domain.member.MemberId;
+import com.example.demo.core.domain.member.MemberRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
