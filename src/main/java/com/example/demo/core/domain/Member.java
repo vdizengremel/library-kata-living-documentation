@@ -26,16 +26,19 @@ public class Member {
     }
 
     public void provideInterest(MemberInterest memberInterest) {
-        memberInterest.informId(id.value().toString());
-        memberInterest.informFirstName(firstName);
-        memberInterest.informLastName(lastName);
-        memberInterest.informEmail(email);
+        memberInterest.setId(id.value().toString());
+        memberInterest.setFirstName(firstName);
+        memberInterest.setLastName(lastName);
+        memberInterest.setEmail(email);
+        memberInterest.setNumberOfAuthorizedBorrowing(numberOfAuthorizedBorrowing);
     }
 
     public interface MemberInterest {
-        void informId(String id);
-        void informFirstName(String firstName);
-        void informLastName(String lastName);
-        void informEmail(String email);
+        void setId(String id);
+        void setFirstName(String firstName);
+        void setLastName(String lastName);
+        void setEmail(String email);
+
+        void setNumberOfAuthorizedBorrowing(int numberOfAuthorizedBorrowing);
     }
 }

@@ -26,29 +26,7 @@ public class MemberController {
         @Override
         public AddMemberResponseBodyDTO presentCreatedMember(Member createdMember) {
             AddMemberResponseBodyDTO responseBodyDTO = new AddMemberResponseBodyDTO();
-
-            createdMember.provideInterest(new Member.MemberInterest() {
-                @Override
-                public void informId(String id) {
-                    responseBodyDTO.id = id;
-                }
-
-                @Override
-                public void informFirstName(String firstName) {
-                    responseBodyDTO.firstName = firstName;
-                }
-
-                @Override
-                public void informLastName(String lastName) {
-                    responseBodyDTO.lastName = lastName;
-                }
-
-                @Override
-                public void informEmail(String email) {
-                    responseBodyDTO.email = email;
-                }
-            });
-
+            createdMember.provideInterest(responseBodyDTO);
             return responseBodyDTO;
         }
 

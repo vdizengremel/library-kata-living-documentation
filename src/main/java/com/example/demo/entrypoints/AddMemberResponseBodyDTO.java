@@ -1,13 +1,17 @@
 package com.example.demo.entrypoints;
 
-import lombok.Getter;
+import com.example.demo.core.domain.Member;
 import lombok.Setter;
 
-//@Getter
 @Setter
-public class AddMemberResponseBodyDTO {
+public class AddMemberResponseBodyDTO implements Member.MemberInterest {
     public String id;
     public String firstName;
     public String lastName;
     public String email;
+
+    @Override
+    public void setNumberOfAuthorizedBorrowing(int numberOfAuthorizedBorrowing) {
+
+    }
 }

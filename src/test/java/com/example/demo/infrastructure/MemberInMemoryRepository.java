@@ -3,11 +3,12 @@ package com.example.demo.infrastructure;
 import com.example.demo.core.domain.Member;
 import com.example.demo.core.domain.MemberId;
 import com.example.demo.core.domain.MemberRepository;
-import org.springframework.context.annotation.Primary;
+import lombok.Setter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Component
 @Profile("inMemoryRepository")
@@ -42,16 +43,36 @@ public class MemberInMemoryRepository implements MemberRepository {
 
     @Override
     public boolean existsWithEmail(String email) {
-        return membersById.values().stream().anyMatch(member -> member.hasEmail(email));
+        return getMemberStream().anyMatch(member -> member.hasEmail(email));
     }
 
     @Override
     public Optional<Member> findById(MemberId id) {
-        return membersById.values().stream().filter(member -> member.getId().equals(id)).findFirst();
+        return getMemberStream().filter(member -> member.getId().equals(id)).findFirst();
     }
 
     @Override
     public long countAll() {
         return membersById.values().size();
+    }
+
+    private Stream<Member> getMemberStream() {
+        return membersById.values().stream().map(this::copy);
+    }
+
+    private Member copy(Member member) {
+       final MemberData memberData = new MemberData();
+        member.provideInterest(memberData);
+
+        return new Member(new MemberId(UUID.fromString(memberData.id)), memberData.firstName, memberData.lastName, memberData.email, memberData.numberOfAuthorizedBorrowing);
+    }
+
+    @Setter
+    public static class MemberData implements Member.MemberInterest {
+        public String id;
+        public String firstName;
+        public String lastName;
+        public String email;
+        public int numberOfAuthorizedBorrowing;
     }
 }
