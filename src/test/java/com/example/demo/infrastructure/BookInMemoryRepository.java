@@ -13,13 +13,17 @@ import java.util.*;
 @Profile("inMemoryRepository")
 public class BookInMemoryRepository extends AbstractInMemoryRepository<ISBN, Book> implements BookRepository {
 
-
     public BookInMemoryRepository() {
         super(Collections.emptyList());
     }
 
     @Override
-    public void add(Book newBook) {
+    public Optional<Book> findByIsbn(ISBN isbn) {
+        return this.findById(isbn);
+    }
+
+    @Override
+    public void register(Book newBook) {
         super.add(newBook.getIsbn(), newBook);
     }
 
