@@ -4,18 +4,25 @@ import lombok.Getter;
 
 public class Book {
     @Getter
-    private final BookId id;
+    private final ISBN isbn;
+    private String title;
+    private String author;
 
-
-    public Book(BookId id) {
-        this.id = id;
+    public Book(ISBN isbn, String title, String author) {
+        this.isbn = isbn;
+        this.title = title;
+        this.author = author;
     }
 
     public void provideInterest(BookInterest interest) {
-        interest.setId(id.uuid().toString());
+        interest.setId(isbn.value());
+        interest.setTitle(title);
+        interest.setAuthor(author);
     }
 
     public interface BookInterest {
         void setId(String id);
+        void setTitle(String title);
+        void setAuthor(String author);
     }
 }

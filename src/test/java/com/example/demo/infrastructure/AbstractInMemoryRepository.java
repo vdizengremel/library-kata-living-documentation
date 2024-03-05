@@ -32,7 +32,7 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
     }
 
     public Optional<DATA> findById(ID id) {
-        return Optional.ofNullable(dataById.get(id));
+        return Optional.ofNullable(dataById.get(id)).map(this::copy);
     }
 
     protected abstract DATA copy(DATA data);

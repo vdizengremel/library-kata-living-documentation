@@ -1,7 +1,7 @@
 package com.example.demo.core.usecases;
 
 import com.example.demo.core.domain.book.Book;
-import com.example.demo.core.domain.book.BookId;
+import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.book.BookRepository;
 
 public class RegisterABookUseCase {
@@ -12,18 +12,18 @@ public class RegisterABookUseCase {
     }
 
     public void execute(RegisterABookCommand command) {
-        BookId bookId = bookRepository.generateNewId();
-        Book newBook = new Book(bookId);
+        ISBN ISBN = new ISBN(command.getIsbn());
+        Book newBook = new Book(ISBN, command.getTitle(), command.getAuthor());
         bookRepository.add(newBook);
     }
 
-    static interface RegisterABookCommand {
+    public interface RegisterABookCommand {
         String getIsbn();
         String getTitle();
         String getAuthor();
     }
 
-    static interface RegisterABookPresenter<T> {
+    public interface RegisterABookPresenter<T> {
         T presentRegistrationSuccess();
         T presentBoolAlreadyRegistered();
     }

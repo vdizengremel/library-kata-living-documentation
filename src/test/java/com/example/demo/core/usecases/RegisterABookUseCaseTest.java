@@ -1,7 +1,7 @@
 package com.example.demo.core.usecases;
 
 import com.example.demo.core.domain.book.Book;
-import com.example.demo.core.domain.book.BookId;
+import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.book.BookRepository;
 import com.example.demo.infrastructure.BookInMemoryRepository;
 import lombok.Builder;
@@ -28,8 +28,9 @@ class RegisterABookUseCaseTest {
         var command = Command.builder().isbn("isbn").title("title").author("author").build();
         registerABookUseCase.execute(command);
 
-        Optional<Book> optionalBook = bookRepository.findById(BookInMemoryRepository.BOOK_IDS.getFirst());
+        Optional<Book> optionalBook = bookRepository.findById(new ISBN("isbn"));
         assertThat(optionalBook).isPresent();
+        assertThat(optionalBook.get()).usingRecursiveComparison().isEqualTo(new Book(new ISBN("isbn"), "title", "author"));
     }
 
     @Getter
