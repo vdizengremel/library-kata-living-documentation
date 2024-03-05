@@ -13,23 +13,22 @@ public class AddMemberUseCase {
     }
 
     public <T> T execute(AddMemberUseCaseCommand command, AddMemberUseCasePresenter<T> presenter) {
-        if(memberRepository.existsWithEmail(command.getEmail())) {
+        if (memberRepository.existsWithEmail(command.getEmail())) {
             return presenter.presentErrorAnotherMemberExistsWithSameEmail();
         }
 
-        var member = new Member(
+        var member = Member.createNewMember(
                 memberRepository.generateNewId(),
                 command.getFirstName(),
                 command.getLastName(),
-                command.getEmail(),
-                5
+                command.getEmail()
         );
 
         memberRepository.add(member);
         return presenter.presentAddedMember(member);
     }
 
-   public interface AddMemberUseCaseCommand {
+    public interface AddMemberUseCaseCommand {
         String getFirstName();
 
         String getLastName();
@@ -39,6 +38,7 @@ public class AddMemberUseCase {
 
     public interface AddMemberUseCasePresenter<T> {
         T presentAddedMember(Member addedMember);
+
         T presentErrorAnotherMemberExistsWithSameEmail();
     }
 }

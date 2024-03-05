@@ -3,6 +3,7 @@ package com.example.demo.entrypoints;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
+import com.example.demo.core.domain.member.MemberStatus;
 import com.example.demo.infrastructure.UUIDGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,7 @@ class MemberControllerTest {
         MemberId id = new MemberId(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5"));
 
         assertThat(memberRepository.findById(id)).hasValueSatisfying(member -> {
-            Member expectedMember = new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5);
+            Member expectedMember = new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", MemberStatus.NEW_MEMBER);
             assertThat(member).usingRecursiveComparison().isEqualTo(expectedMember);
         });
     }

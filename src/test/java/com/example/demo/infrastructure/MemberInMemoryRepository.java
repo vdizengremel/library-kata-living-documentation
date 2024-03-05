@@ -3,6 +3,7 @@ package com.example.demo.infrastructure;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
+import com.example.demo.core.domain.member.MemberStatus;
 import lombok.Setter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -63,7 +64,7 @@ public class MemberInMemoryRepository extends AbstractInMemoryRepository<MemberI
         final MemberData memberData = new MemberData();
         member.provideInterest(memberData);
 
-        return new Member(new MemberId(UUID.fromString(memberData.id)), memberData.firstName, memberData.lastName, memberData.email, memberData.numberOfAuthorizedBorrowing);
+        return new Member(new MemberId(UUID.fromString(memberData.id)), memberData.firstName, memberData.lastName, memberData.email, memberData.status);
     }
 
     @Setter
@@ -72,6 +73,6 @@ public class MemberInMemoryRepository extends AbstractInMemoryRepository<MemberI
         public String firstName;
         public String lastName;
         public String email;
-        public int numberOfAuthorizedBorrowing;
+        public MemberStatus status;
     }
 }

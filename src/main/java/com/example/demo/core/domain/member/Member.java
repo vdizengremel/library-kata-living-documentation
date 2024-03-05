@@ -11,14 +11,18 @@ public class Member {
 
     private String email;
 
-    private int numberOfAuthorizedBorrowing;
+    private MemberStatus status;
 
-    public Member(MemberId id, String firstName, String lastName, String email, int numberOfAuthorizedBorrowing) {
+    public static Member createNewMember(MemberId id, String firstName, String lastName, String email) {
+        return new Member(id, firstName, lastName, email, MemberStatus.NEW_MEMBER);
+    }
+
+    public Member(MemberId id, String firstName, String lastName, String email, MemberStatus status) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.numberOfAuthorizedBorrowing = numberOfAuthorizedBorrowing;
+        this.status = status;
     }
 
     public boolean hasEmail(String email) {
@@ -30,7 +34,7 @@ public class Member {
         memberInterest.setFirstName(firstName);
         memberInterest.setLastName(lastName);
         memberInterest.setEmail(email);
-        memberInterest.setNumberOfAuthorizedBorrowing(numberOfAuthorizedBorrowing);
+        memberInterest.setStatus(status);
     }
 
     public interface MemberInterest {
@@ -38,7 +42,7 @@ public class Member {
         void setFirstName(String firstName);
         void setLastName(String lastName);
         void setEmail(String email);
+        void setStatus(MemberStatus status);
 
-        void setNumberOfAuthorizedBorrowing(int numberOfAuthorizedBorrowing);
     }
 }

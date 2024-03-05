@@ -3,6 +3,7 @@ package com.example.demo.infrastructure;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
+import com.example.demo.core.domain.member.MemberStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ public abstract class AbstractMemberRepositoryTest {
     @Test
     void shouldAddMember() {
         MemberId id = new MemberId(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5"));
-        Member member = new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", 5);
+        Member member = new Member(id, "Jean", "Dupond", "jean.dupond@somemail.com", MemberStatus.NEW_MEMBER);
         memberRepository.add(member);
 
         assertThat(memberRepository.findById(id).get()).usingRecursiveComparison().isEqualTo(member);
@@ -39,7 +40,7 @@ public abstract class AbstractMemberRepositoryTest {
 
     @Test
     void shouldReturnFalseWhenMemberWithEmailDoesNotExist() {
-        Member member = new Member(new MemberId(UUID.randomUUID()), "Jean", "Dupond", "jean.dupond@somemail.com", 5);
+        Member member = new Member(new MemberId(UUID.randomUUID()), "Jean", "Dupond", "jean.dupond@somemail.com", MemberStatus.NEW_MEMBER);
         memberRepository.add(member);
 
         boolean result = memberRepository.existsWithEmail("jean.durant@somemail.com");
@@ -48,7 +49,7 @@ public abstract class AbstractMemberRepositoryTest {
 
     @Test
     void shouldReturnTrueWhenMemberWithEmailExists() {
-        Member member = new Member(new MemberId(UUID.randomUUID()), "Jean", "Dupond", "jean.dupond@somemail.com", 5);
+        Member member = new Member(new MemberId(UUID.randomUUID()), "Jean", "Dupond", "jean.dupond@somemail.com", MemberStatus.NEW_MEMBER);
         memberRepository.add(member);
 
         boolean result = memberRepository.existsWithEmail("jean.dupond@somemail.com");
