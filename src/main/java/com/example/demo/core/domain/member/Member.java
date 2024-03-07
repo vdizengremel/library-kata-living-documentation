@@ -1,6 +1,9 @@
 package com.example.demo.core.domain.member;
 
+import com.example.demo.core.domain.book.ISBN;
 import lombok.Getter;
+
+import java.time.LocalDate;
 
 public class Member {
     @Getter
@@ -27,6 +30,19 @@ public class Member {
 
     public boolean hasEmail(String email) {
         return this.email.equals(email);
+    }
+
+    public Borrowing borrow(ISBN isbn, LocalDate startDate, BorrowingId borrowingId) {
+        return Borrowing.createNewBorrowing(borrowingId, getId(), isbn, startDate);
+    }
+
+    public int getMaxNumberOfAuthorizedBorrowing() {
+        return switch (status) {
+            case NEW_MEMBER -> 3;
+            case REGULAR -> 5;
+            case RESTRICTED -> 1;
+            case BANNED -> 0;
+        };
     }
 
     public void provideInterest(MemberInterest memberInterest) {

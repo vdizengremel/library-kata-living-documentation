@@ -4,6 +4,7 @@ import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
 import com.example.demo.core.domain.member.MemberStatus;
+import com.example.demo.infrastructure.MemberInMemoryRepository;
 import com.example.demo.infrastructure.UUIDGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,13 +37,14 @@ class MemberControllerTest {
     private TestRestTemplate template;
 
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberInMemoryRepository memberRepository;
 
     @MockBean
     private UUIDGenerator uuidGenerator;
 
     @BeforeEach
     void setUp() {
+        memberRepository.deleteAll();
         when(uuidGenerator.generateUUID()).thenReturn(UUID.fromString("001b0068-1eb5-4c65-85c4-1b1eb788ecd5"));
     }
 
@@ -60,6 +62,7 @@ class MemberControllerTest {
         expectedBody.firstName = "Jean";
         expectedBody.lastName = "Dupond";
         expectedBody.email = "jean.dupond@somemail.com";
+        expectedBody.status = MemberStatus.NEW_MEMBER;
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedBody);
@@ -82,7 +85,7 @@ class MemberControllerTest {
         addMemberRequestBodyDTO.setEmail("jean.dupond@somemail.com");
 
         template.postForEntity("/member/", addMemberRequestBodyDTO, AddMemberResponseBodyDTO.class);
-        ResponseEntity<AddMemberResponseBodyDTO> response = template.postForEntity("/member/", addMemberRequestBodyDTO, AddMemberResponseBodyDTO.class);
+        ResponseEntity<Object> response = template.postForEntity("/member/", addMemberRequestBodyDTO, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(memberRepository.countAll()).isEqualTo(1);

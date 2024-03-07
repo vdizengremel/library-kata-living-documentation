@@ -36,4 +36,8 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
     }
 
     protected abstract DATA copy(DATA data);
+
+    public void deleteAll() {
+        dataById.clear();
+    }
 }

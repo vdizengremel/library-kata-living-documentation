@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import static com.example.demo.core.domain.Assertions.assertNotNull;
 
-public record MemberId(UUID value) {
-    public MemberId {
+public record BorrowingId(UUID value) {
+    public BorrowingId {
         assertNotNull(value, "value");
     }
 }
