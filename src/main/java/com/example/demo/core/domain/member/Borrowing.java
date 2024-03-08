@@ -16,7 +16,7 @@ public final class Borrowing {
     private final LocalDate startDate;
     private final LocalDate maxAuthorizedReturnDate;
 
-    public static Borrowing createNewBorrowing(BorrowingId id, MemberId memberId, ISBN isbn, LocalDate startDate) {
+    static Borrowing createNewBorrowing(BorrowingId id, MemberId memberId, ISBN isbn, LocalDate startDate) {
         return new Borrowing(id, memberId, isbn, startDate, startDate.plusWeeks(3));
     }
 

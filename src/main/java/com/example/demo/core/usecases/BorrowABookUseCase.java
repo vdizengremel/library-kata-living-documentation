@@ -1,27 +1,21 @@
 package com.example.demo.core.usecases;
 
-import com.example.demo.core.domain.TimeService;
-import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.BookRepository;
 import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.member.*;
-import io.vavr.control.Either;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 public class BorrowABookUseCase {
 
     private final MemberRepository memberRepository;
     private final BookRepository bookRepository;
-    private final BorrowingRepository borrowingRepository;
-    private final TimeService timeService;
+    private final BorrowingService borrowingService;
 
-    public BorrowABookUseCase(MemberRepository memberRepository, BookRepository bookRepository, BorrowingRepository borrowingRepository, TimeService timeService) {
+    public BorrowABookUseCase(MemberRepository memberRepository, BookRepository bookRepository, BorrowingService borrowingService) {
         this.memberRepository = memberRepository;
         this.bookRepository = bookRepository;
-        this.borrowingRepository = borrowingRepository;
-        this.timeService = timeService;
+        this.borrowingService = borrowingService;
     }
 
     public <T> T execute(BorrowABookCommand command, BorrowABookPresenter<T> presenter) {
@@ -38,22 +32,8 @@ public class BorrowABookUseCase {
             return presenter.presentBookDoesNotExist();
         }
 
-        var either = borrowBook(optMember.get(), optBook.get());
-        return either.fold(e -> presenter.presentCannotBorrowedBook(), borrowing -> presenter.presentSuccess());
-    }
-
-    private Either<RuntimeException, Borrowing> borrowBook(Member member, Book book) {
-        int maxNumberOfAuthorizedBorrowing = member.getMaxNumberOfAuthorizedBorrowing();
-
-        if(borrowingRepository.countByMemberId(member.getId()) >= maxNumberOfAuthorizedBorrowing) {
-            return Either.left(new RuntimeException());
-        }
-
-        BorrowingId borrowingId = borrowingRepository.generateNewId();
-        LocalDate startDate = timeService.getCurrentDate();
-        Borrowing newBorrowing = member.borrow(book.getIsbn(), startDate, borrowingId);
-        borrowingRepository.add(newBorrowing);
-        return Either.right(newBorrowing);
+        var borrowingOrError = borrowingService.borrowBook(optMember.get(), optBook.get());
+        return borrowingOrError.ifSuccessOr(borrowing -> presenter.presentSuccess(), e -> presenter.presentCannotBorrowedBook());
     }
 
     public interface BorrowABookCommand {

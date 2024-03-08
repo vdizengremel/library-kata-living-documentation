@@ -36,7 +36,7 @@ class BorrowABookUseCaseTest {
         borrowingRepository = new BorrowingInMemoryRepository();
         timeService = Mockito.mock(TimeService.class);
 
-        borrowABookUseCase = new BorrowABookUseCase(memberRepository, bookRepository, borrowingRepository, timeService);
+        borrowABookUseCase = new BorrowABookUseCase(memberRepository, bookRepository, new BorrowingService(borrowingRepository, timeService));
     }
 
     @Test

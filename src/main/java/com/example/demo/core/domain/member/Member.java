@@ -1,6 +1,6 @@
 package com.example.demo.core.domain.member;
 
-import com.example.demo.core.domain.book.ISBN;
+import com.example.demo.core.domain.book.Book;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -15,6 +15,8 @@ public class Member {
     private String email;
 
     private MemberStatus status;
+
+
 
     public static Member createNewMember(MemberId id, String firstName, String lastName, String email) {
         return new Member(id, firstName, lastName, email, MemberStatus.NEW_MEMBER);
@@ -32,11 +34,11 @@ public class Member {
         return this.email.equals(email);
     }
 
-    public Borrowing borrow(ISBN isbn, LocalDate startDate, BorrowingId borrowingId) {
-        return Borrowing.createNewBorrowing(borrowingId, getId(), isbn, startDate);
+    Borrowing borrow(Book book, LocalDate startDate, BorrowingId borrowingId) {
+        return Borrowing.createNewBorrowing(borrowingId, getId(), book.getIsbn(), startDate);
     }
 
-    public int getMaxNumberOfAuthorizedBorrowing() {
+    int getMaxNumberOfAuthorizedBorrowing() {
         return switch (status) {
             case NEW_MEMBER -> 3;
             case REGULAR -> 5;
@@ -55,9 +57,13 @@ public class Member {
 
     public interface MemberInterest {
         void setId(String id);
+
         void setFirstName(String firstName);
+
         void setLastName(String lastName);
+
         void setEmail(String email);
+
         void setStatus(MemberStatus status);
 
     }
