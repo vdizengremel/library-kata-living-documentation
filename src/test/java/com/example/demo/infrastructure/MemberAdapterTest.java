@@ -14,9 +14,12 @@ import org.testcontainers.containers.MongoDBContainer;
 
 @SpringBootTest
 @ActiveProfiles("repository-test")
-public class MemberAdapterTest extends AbstractMemberRepositoryTest {
+public class MemberAdapterTest extends AbstractMemberRepositoryTest<MemberRepository> {
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberMongoSpringRepository memberMongoSpringRepository;
 
     @ClassRule
     public static MongoDBContainer mongoDBContainer = ProjectMongoContainer.getInstance();
@@ -34,5 +37,10 @@ public class MemberAdapterTest extends AbstractMemberRepositoryTest {
     @Override
     MemberRepository getMemberRepository() {
         return memberRepository;
+    }
+
+    @Override
+    public void deleteAll() {
+        memberMongoSpringRepository.deleteAll();
     }
 }

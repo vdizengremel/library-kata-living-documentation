@@ -63,7 +63,7 @@ class RegisterABookUseCaseTest {
         }
 
         @Override
-        public String presentBoolAlreadyRegistered() {
+        public String presentBookAlreadyRegistered() {
             throw new RuntimeException("Book already registered");
         }
     }

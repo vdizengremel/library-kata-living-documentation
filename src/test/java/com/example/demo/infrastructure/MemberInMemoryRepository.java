@@ -60,11 +60,16 @@ public class MemberInMemoryRepository extends AbstractInMemoryRepository<MemberI
         return streamData().count();
     }
 
+    @Override
+    public void update(Member member) {
+        this.update(member.getId(), member);
+    }
+
     protected Member copy(Member member) {
         final MemberData memberData = new MemberData();
         member.provideInterest(memberData);
 
-        return new Member(new MemberId(UUID.fromString(memberData.id)), memberData.firstName, memberData.lastName, memberData.email, memberData.status);
+        return new Member(MemberId.from(memberData.id), memberData.firstName, memberData.lastName, memberData.email, memberData.status);
     }
 
     @Setter

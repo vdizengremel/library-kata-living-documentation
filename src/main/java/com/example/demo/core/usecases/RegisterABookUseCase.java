@@ -20,7 +20,7 @@ public class RegisterABookUseCase {
 
         Optional<Book> foundBook = this.bookRepository.findByIsbn(isbn);
         if(foundBook.isPresent()) {
-            return presenter.presentBoolAlreadyRegistered();
+            return presenter.presentBookAlreadyRegistered();
         }
 
         Book newBook = new Book(isbn, command.getTitle(), command.getAuthor());
@@ -36,6 +36,6 @@ public class RegisterABookUseCase {
 
     public interface RegisterABookPresenter<T> {
         T presentRegistrationSuccess();
-        T presentBoolAlreadyRegistered();
+        T presentBookAlreadyRegistered();
     }
 }

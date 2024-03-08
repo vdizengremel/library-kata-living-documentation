@@ -52,7 +52,7 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
         final BorrowingData borrowingData = new BorrowingData();
         borrowing.provideInterest(borrowingData);
 
-        return new Borrowing(new BorrowingId(UUID.fromString(borrowingData.id)), new MemberId(UUID.fromString(borrowingData.memberId)), new ISBN(borrowingData.isbn), borrowingData.startDate, borrowingData.maxAuthorizedReturnDate);
+        return new Borrowing(new BorrowingId(UUID.fromString(borrowingData.id)), MemberId.from(borrowingData.memberId), new ISBN(borrowingData.isbn), borrowingData.startDate, borrowingData.maxAuthorizedReturnDate);
     }
 
     @Setter

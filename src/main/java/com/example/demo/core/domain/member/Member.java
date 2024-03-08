@@ -2,6 +2,7 @@ package com.example.demo.core.domain.member;
 
 import com.example.demo.core.domain.book.Book;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -9,10 +10,13 @@ public class Member {
     @Getter
     private final MemberId id;
 
+    @Setter
     private String firstName;
+
+    @Setter
     private String lastName;
 
-    private String email;
+    private final String email;
 
     private MemberStatus status;
 
@@ -48,7 +52,7 @@ public class Member {
     }
 
     public void provideInterest(MemberInterest memberInterest) {
-        memberInterest.setId(id.value().toString());
+        memberInterest.setId(id.toValueString());
         memberInterest.setFirstName(firstName);
         memberInterest.setLastName(lastName);
         memberInterest.setEmail(email);

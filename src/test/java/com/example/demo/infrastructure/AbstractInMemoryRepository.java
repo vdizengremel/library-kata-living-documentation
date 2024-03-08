@@ -24,6 +24,14 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
     }
 
     protected void add(ID id, DATA data) {
+        if(dataById.containsKey(id)) {
+            throw new RuntimeException("data with id "+ id + " was already added");
+        }
+
+        dataById.put(id, data);
+    }
+
+    protected void update(ID id, DATA data) {
         dataById.put(id, data);
     }
 

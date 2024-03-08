@@ -42,7 +42,7 @@ class BorrowABookUseCaseTest {
     @Test
     void shouldPresentErrorWhenMemberDoesNotExists() {
         MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
-        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.value().toString()).build();
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Member does not exist");
     }
@@ -52,7 +52,7 @@ class BorrowABookUseCaseTest {
         MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
         memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
 
-        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.value().toString()).build();
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Book does not exist");
     }
@@ -68,7 +68,7 @@ class BorrowABookUseCaseTest {
         ISBN isbn = new ISBN("isbn");
         bookRepository.register(new Book(isbn, "title", "author"));
 
-        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.value().toString()).build();
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         var result = borrowABookUseCase.execute(command, new BorrowABookPresenterForTest());
         assertThat(result).isEqualTo("success");
@@ -99,7 +99,7 @@ class BorrowABookUseCaseTest {
         ISBN isbn = new ISBN("isbn");
         bookRepository.register(new Book(isbn, "title", "author"));
 
-        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.value().toString()).build();
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book");
         assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(3);
@@ -129,7 +129,7 @@ class BorrowABookUseCaseTest {
         ISBN isbn = new ISBN("isbn");
         bookRepository.register(new Book(isbn, "title", "author"));
 
-        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.value().toString()).build();
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThat(borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).isEqualTo("success");
         assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(1);
@@ -147,7 +147,7 @@ class BorrowABookUseCaseTest {
         ISBN isbn = new ISBN("isbn");
         bookRepository.register(new Book(isbn, "title", "author"));
 
-        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.value().toString()).build();
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book");
         assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(0);
@@ -163,7 +163,7 @@ class BorrowABookUseCaseTest {
 
     private void borrowBooks(List<String> isbns, MemberId memberId) {
         for (String isbnValue : isbns) {
-            var command = BorrowABookCommandForTest.builder().bookIsbn(isbnValue).memberId(memberId.value().toString()).build();
+            var command = BorrowABookCommandForTest.builder().bookIsbn(isbnValue).memberId(memberId.toValueString()).build();
             var result = borrowABookUseCase.execute(command, new BorrowABookPresenterForTest());
             assertThat(result).isEqualTo("success");
         }

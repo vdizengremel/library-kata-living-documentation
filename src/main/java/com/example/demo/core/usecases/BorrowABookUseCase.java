@@ -19,7 +19,7 @@ public class BorrowABookUseCase {
     }
 
     public <T> T execute(BorrowABookCommand command, BorrowABookPresenter<T> presenter) {
-        var memberId = new MemberId(UUID.fromString(command.getMemberId()));
+        var memberId = MemberId.from(command.getMemberId());
         var optMember = memberRepository.findById(memberId);
 
         if(optMember.isEmpty()) {

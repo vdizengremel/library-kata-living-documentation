@@ -8,4 +8,12 @@ public record MemberId(UUID value) {
     public MemberId {
         assertNotNull(value, "value");
     }
+
+    public String toValueString() {
+        return value.toString();
+    }
+
+    public static MemberId from(String id) {
+        return new MemberId(UUID.fromString(id));
+    }
 }

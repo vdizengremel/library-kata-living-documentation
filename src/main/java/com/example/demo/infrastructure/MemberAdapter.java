@@ -43,4 +43,9 @@ public class MemberAdapter implements MemberRepository {
     public long countAll() {
         return memberMongoSpringRepository.count();
     }
+
+    @Override
+    public void update(Member member) {
+        memberMongoSpringRepository.save(member);
+    }
 }

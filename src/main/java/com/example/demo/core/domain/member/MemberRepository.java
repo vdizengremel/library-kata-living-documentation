@@ -10,4 +10,6 @@ public interface MemberRepository {
     Optional<Member> findById(MemberId id);
 
     long countAll();
+
+    void update(Member member);
 }

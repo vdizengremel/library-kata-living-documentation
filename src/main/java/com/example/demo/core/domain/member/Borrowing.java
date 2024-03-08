@@ -42,7 +42,7 @@ public final class Borrowing {
     public void provideInterest(BorrowingInterest borrowingInterest) {
         borrowingInterest.setId(id.value().toString());
         borrowingInterest.setIsbn(isbn.value());
-        borrowingInterest.setMemberId(memberId.value().toString());
+        borrowingInterest.setMemberId(memberId.toValueString());
         borrowingInterest.setStartDate(startDate);
         borrowingInterest.setMaxAuthorizedReturnDate(maxAuthorizedReturnDate);
     }

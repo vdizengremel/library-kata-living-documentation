@@ -20,15 +20,15 @@ public class BookController {
 
     @PostMapping("/")
     public ResponseEntity<Void> addMember(@RequestBody BookHttpDTO bookHttpDTO) {
-       return registerABookUseCase.execute(bookHttpDTO, new RegisterABookUseCase.RegisterABookPresenter<ResponseEntity<Void>>() {
+       return registerABookUseCase.execute(bookHttpDTO, new RegisterABookUseCase.RegisterABookPresenter<>() {
            @Override
            public ResponseEntity<Void> presentRegistrationSuccess() {
                return ResponseEntity.ok(null);
            }
 
            @Override
-           public ResponseEntity<Void> presentBoolAlreadyRegistered() {
-              throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+           public ResponseEntity<Void> presentBookAlreadyRegistered() {
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
            }
        });
     }
