@@ -3,7 +3,7 @@ package com.example.demo.entrypoints;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberStatus;
-import com.example.demo.infrastructure.MemberInMemoryRepository;
+import com.example.demo.infrastructure.member.MemberInMemoryRepository;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

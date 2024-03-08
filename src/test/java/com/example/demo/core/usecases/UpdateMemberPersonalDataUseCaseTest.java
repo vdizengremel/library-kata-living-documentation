@@ -3,7 +3,7 @@ package com.example.demo.core.usecases;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
-import com.example.demo.infrastructure.MemberInMemoryRepository;
+import com.example.demo.infrastructure.member.MemberInMemoryRepository;
 import lombok.Builder;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;

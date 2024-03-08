@@ -1,9 +1,10 @@
-package com.example.demo.infrastructure;
+package com.example.demo.infrastructure.member;
 
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
 import com.example.demo.core.domain.member.MemberStatus;
+import com.example.demo.infrastructure.AbstractInMemoryRepository;
 import lombok.Setter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

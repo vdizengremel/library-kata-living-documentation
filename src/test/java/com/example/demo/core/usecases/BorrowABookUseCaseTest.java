@@ -7,7 +7,7 @@ import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.member.*;
 import com.example.demo.infrastructure.BookInMemoryRepository;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
-import com.example.demo.infrastructure.MemberInMemoryRepository;
+import com.example.demo.infrastructure.member.MemberInMemoryRepository;
 import lombok.Builder;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;

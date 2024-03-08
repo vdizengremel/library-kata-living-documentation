@@ -1,4 +1,4 @@
-package com.example.demo.infrastructure;
+package com.example.demo.infrastructure.member;
 
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberStatus;
