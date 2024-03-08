@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UpdateMemberPersonalDataUseCaseTest {
     private UpdateMemberPersonalDataUseCase updateMemberPersonalDataUseCase;
@@ -38,6 +39,13 @@ class UpdateMemberPersonalDataUseCaseTest {
         assertThat(updatedMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }
 
+    @Test
+    void shouldThrowWhenMemberDoesNotExist() {
+        MemberId id = memberRepository.generateNewId();
+
+        var command = CommandForTest.builder().firstName("Paul").lastName("Durand").memberId(id.toValueString()).build();
+        assertThatThrownBy(() -> updateMemberPersonalDataUseCase.execute(command, new PresenterForTest())).hasMessage("member does not exist");
+    }
 
     @Getter
     @Builder
@@ -52,6 +60,11 @@ class UpdateMemberPersonalDataUseCaseTest {
         @Override
         public String presentSuccess() {
             return "success";
+        }
+
+        @Override
+        public String presentMemberDoesNotExist() {
+            throw new RuntimeException("member does not exist");
         }
     }
 }
