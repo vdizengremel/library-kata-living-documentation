@@ -1,7 +1,6 @@
 package com.example.demo.entrypoints;
 
 import com.example.demo.core.usecases.RegisterABookUseCase;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +19,8 @@ public class BookController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Void> addMember(@RequestBody BookDTO bookDTO) {
-       return registerABookUseCase.execute(bookDTO, new RegisterABookUseCase.RegisterABookPresenter<ResponseEntity<Void>>() {
+    public ResponseEntity<Void> addMember(@RequestBody BookHttpDTO bookHttpDTO) {
+       return registerABookUseCase.execute(bookHttpDTO, new RegisterABookUseCase.RegisterABookPresenter<ResponseEntity<Void>>() {
            @Override
            public ResponseEntity<Void> presentRegistrationSuccess() {
                return ResponseEntity.ok(null);
