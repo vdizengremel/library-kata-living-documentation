@@ -1,4 +1,4 @@
-package com.example.demo.infrastructure;
+package com.example.demo.infrastructure.book;
 
 import com.example.demo.core.domain.book.Book;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.example.demo.infrastructure;
+package com.example.demo.infrastructure.member;
 
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
@@ -7,21 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @Profile("!inMemoryRepository")
 public class MemberAdapter implements MemberRepository {
     private final MemberMongoSpringRepository memberMongoSpringRepository;
-    private final UUIDGenerator uuidGenerator;
 
-    public MemberAdapter(MemberMongoSpringRepository memberMongoSpringRepository, UUIDGenerator uuidGenerator) {
+    public MemberAdapter(MemberMongoSpringRepository memberMongoSpringRepository) {
         this.memberMongoSpringRepository = memberMongoSpringRepository;
-        this.uuidGenerator = uuidGenerator;
     }
 
     @Override
     public MemberId generateNewId() {
-        return new MemberId(uuidGenerator.generateUUID());
+        return new MemberId(UUID.randomUUID());
     }
 
     @Override

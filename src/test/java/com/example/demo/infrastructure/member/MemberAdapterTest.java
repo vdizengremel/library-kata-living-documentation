@@ -2,7 +2,6 @@ package com.example.demo.infrastructure.member;
 
 import com.example.demo.ProjectMongoContainer;
 import com.example.demo.core.domain.member.MemberRepository;
-import com.example.demo.infrastructure.MemberMongoSpringRepository;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
