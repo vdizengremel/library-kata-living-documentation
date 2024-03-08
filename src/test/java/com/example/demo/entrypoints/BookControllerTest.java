@@ -2,16 +2,13 @@ package com.example.demo.entrypoints;
 
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.ISBN;
-import com.example.demo.infrastructure.BookInMemoryRepository;
+import com.example.demo.infrastructure.book.BookInMemoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 

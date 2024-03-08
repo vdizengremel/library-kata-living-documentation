@@ -27,18 +27,8 @@ public class MemberInMemoryRepository extends AbstractInMemoryRepository<MemberI
             .map(MemberId::new)
             .toList();
 
-    private int uuidIndex;
-
     public MemberInMemoryRepository() {
         super(MEMBER_IDS);
-    }
-
-
-    @Override
-    public MemberId generateNewId() {
-        MemberId memberId = MEMBER_IDS.get(uuidIndex);
-        uuidIndex++;
-        return memberId;
     }
 
     @Override

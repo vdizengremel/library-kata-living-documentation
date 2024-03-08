@@ -1,8 +1,9 @@
-package com.example.demo.infrastructure;
+package com.example.demo.infrastructure.book;
 
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.book.BookRepository;
+import com.example.demo.infrastructure.AbstractInMemoryRepository;
 import lombok.Setter;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -31,12 +32,12 @@ public class BookInMemoryRepository extends AbstractInMemoryRepository<ISBN, Boo
         final BookData bookData = new BookData();
         book.provideInterest(bookData);
 
-        return new Book(new ISBN(bookData.id), bookData.title, bookData.author);
+        return new Book(new ISBN(bookData.isbn), bookData.title, bookData.author);
     }
 
     @Setter
     private static class BookData implements Book.BookInterest {
-        public String id;
+        public String isbn;
         public String title;
         public String author;
     }

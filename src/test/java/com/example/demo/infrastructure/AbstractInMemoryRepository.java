@@ -47,5 +47,6 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
 
     public void deleteAll() {
         dataById.clear();
+        idIndex = 0;
     }
 }

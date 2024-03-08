@@ -21,7 +21,10 @@ public class ProjectMongoContainer extends MongoDBContainer {
     public void start() {
         super.start();
         System.setProperty("MONGODB_URI", container.getConnectionString());
-//        System.setProperty("DB_USERNAME", container.pas());
-//        System.setProperty("DB_PASSWORD", container.getPassword());
+    }
+
+    @Override
+    public void stop() {
+        // using super.stop(); throws error after end of tests
     }
 }

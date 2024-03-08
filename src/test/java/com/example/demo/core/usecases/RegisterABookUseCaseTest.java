@@ -3,7 +3,7 @@ package com.example.demo.core.usecases;
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.book.BookRepository;
-import com.example.demo.infrastructure.BookInMemoryRepository;
+import com.example.demo.infrastructure.book.BookInMemoryRepository;
 import lombok.Builder;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
