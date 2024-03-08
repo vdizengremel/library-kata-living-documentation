@@ -18,10 +18,7 @@ import java.util.Optional;
 import static com.example.demo.entrypoints.HttpEntityFactory.httpEntityFomJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties =
-        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration")
-@ActiveProfiles({"inMemoryRepository"})
-@AutoConfigureMockMvc
+@ControllerTest
 public class BookControllerTest {
 
     @Autowired
@@ -38,7 +35,7 @@ public class BookControllerTest {
     @Nested
     class PostBook {
         @Test
-        void shouldCreateBook() {
+        void shouldCreateBookAndReturnOkWhenBookDoesNotExist() {
             var request = httpEntityFomJson("""
                     {
                         "isbn": "2070541274",
@@ -56,6 +53,22 @@ public class BookControllerTest {
             assertThat(optionalBook).isPresent();
             assertThat(optionalBook.get()).usingRecursiveComparison().isEqualTo(new Book(isbn, "Harry Potter", "J. K. Rowling"));
 
+        }
+
+        @Test
+        void shouldReturnBadRequestWhenBookAlreadyExists() {
+            var request = httpEntityFomJson("""
+                    {
+                        "isbn": "2070541274",
+                        "title": "Harry Potter",
+                        "author": "J. K. Rowling"
+                    }
+                    """);
+
+            restTemplate.postForEntity("/book/", request, String.class);
+            var response = restTemplate.postForEntity("/book/", request, String.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         }
     }
 }

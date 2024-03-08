@@ -21,10 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties =
-        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration")
-@ActiveProfiles({"inMemoryRepository"})
-@AutoConfigureMockMvc
+@ControllerTest
 class MemberControllerTest {
     @Autowired
     private TestRestTemplate template;
