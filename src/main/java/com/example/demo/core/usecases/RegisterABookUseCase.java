@@ -3,9 +3,11 @@ package com.example.demo.core.usecases;
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.book.BookRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class RegisterABookUseCase {
     private final BookRepository bookRepository;
 
