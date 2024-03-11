@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 class ReturnABookUseCaseTest {
@@ -58,6 +59,11 @@ class ReturnABookUseCaseTest {
         assertThat(updatedBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing(borrowingId, memberId, new ISBN("123"), LocalDate.of(2024, 3, 6), LocalDate.MAX, currentDate));
     }
 
+    @Test
+    void shouldThrowWhenBorrowingDoesNotExist(){
+        assertThatThrownBy(() -> returnABookUseCase.execute(() -> borrowingRepository.generateNewId().toStringValue(), new PresenterForTest())).hasMessage("borrowing does not exist");
+    }
+
     static class PresenterForTest implements ReturnABookUseCase.ReturnABookPresenter<String> {
 
         @Override
@@ -66,7 +72,7 @@ class ReturnABookUseCaseTest {
         }
 
         @Override
-        public String presentBorriwingDoesNotExist() {
+        public String presentBorrowingDoesNotExist() {
             throw new RuntimeException("borrowing does not exist");
         }
     }

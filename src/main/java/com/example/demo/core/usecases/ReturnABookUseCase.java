@@ -17,6 +17,11 @@ public class ReturnABookUseCase {
 
     public <T> T execute(ReturnABookCommand command, ReturnABookPresenter<T> presenter) {
         var optionalBorrowing = borrowingRepository.findById(BorrowingId.fromString(command.borrowingId()));
+
+        if(optionalBorrowing.isEmpty()) {
+            return presenter.presentBorrowingDoesNotExist();
+        }
+
         var borrowing = optionalBorrowing.get();
         var currentDate = timeService.getCurrentDate();
 
@@ -34,6 +39,6 @@ public class ReturnABookUseCase {
     public interface ReturnABookPresenter<T> {
         T presentBookReturned();
 
-        T presentBorriwingDoesNotExist();
+        T presentBorrowingDoesNotExist();
     }
 }
