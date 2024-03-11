@@ -102,7 +102,7 @@ class BorrowABookUseCaseTest {
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book: " + BorrowingError.HAS_REACHED_MAX_AUTHORIZED_BORROWING);
-        assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(3);
+        assertThat(borrowingRepository.findInProgressByMemberId(memberId)).hasSize(3);
     }
 
     @Test
@@ -125,7 +125,7 @@ class BorrowABookUseCaseTest {
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book: " + BorrowingError.HAS_LATE_BORROWING);
-        assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(1);
+        assertThat(borrowingRepository.findInProgressByMemberId(memberId)).hasSize(1);
     }
 
     @Test
@@ -155,8 +155,8 @@ class BorrowABookUseCaseTest {
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThat(borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).isEqualTo("success");
-        assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(1);
-        assertThat(borrowingRepository.countByMemberId(anotherMemberId)).isEqualTo(3);
+        assertThat(borrowingRepository.findInProgressByMemberId(memberId)).hasSize(1);
+        assertThat(borrowingRepository.findInProgressByMemberId(anotherMemberId)).hasSize(3);
     }
 
     @Test
@@ -173,7 +173,7 @@ class BorrowABookUseCaseTest {
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
         assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book: " + BorrowingError.MEMBER_IS_BANNED);
-        assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(0);
+        assertThat(borrowingRepository.findInProgressByMemberId(memberId)).hasSize(0);
     }
 
     private void registerBooks(List<String> isbns) {

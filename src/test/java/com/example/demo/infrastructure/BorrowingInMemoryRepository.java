@@ -46,13 +46,6 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
     }
 
     @Override
-    public long countByMemberId(MemberId memberId) {
-        return streamData()
-                .filter(borrowing -> borrowing.isMadeBy(memberId))
-                .count();
-    }
-
-    @Override
     public List<Borrowing> findInProgressByMemberId(MemberId memberId) {
         return streamData()
                 .filter(borrowing -> borrowing.isMadeBy(memberId))

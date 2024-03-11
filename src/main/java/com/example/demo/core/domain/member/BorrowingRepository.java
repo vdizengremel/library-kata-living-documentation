@@ -10,7 +10,5 @@ public interface BorrowingRepository {
     void add(Borrowing borrowing);
     void update(Borrowing borrowing);
 
-    long countByMemberId(MemberId memberId);
-
     List<Borrowing> findInProgressByMemberId(MemberId memberId);
 }
