@@ -50,7 +50,7 @@ public final class Borrowing {
         borrowingInterest.setReturnDate(returnDate);
     }
 
-    public boolean by(MemberId memberId) {
+    public boolean isMadeBy(MemberId memberId) {
         return this.memberId.equals(memberId);
     }
 
