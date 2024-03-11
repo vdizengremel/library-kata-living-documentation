@@ -1,5 +1,6 @@
 package com.example.demo.core.usecases;
 
+import com.example.demo.core.domain.SuccessOrError;
 import com.example.demo.core.domain.TimeService;
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.BookRepository;
@@ -34,16 +35,17 @@ public class BorrowABookUseCase {
             return presenter.presentBookDoesNotExist();
         }
 
-        var member = optMember.get();
-        var book = optBook.get();
-        var inProgressBorrowings = borrowingRepository.findInProgressByMemberId(memberId);
-
-        var borrowResult = member.borrow(book, timeService.getCurrentDate(), borrowingRepository.generateNewId(), inProgressBorrowings);
+        var borrowResult = borrowBook(optMember.get(), optBook.get());
 
         return borrowResult.ifSuccessOr(borrowing -> {
             borrowingRepository.add(borrowing);
             return presenter.presentSuccess();
         }, presenter::presentCannotBorrowedBook);
+    }
+
+    private SuccessOrError<Borrowing, BorrowingError> borrowBook(Member member, Book book) {
+        var inProgressBorrowings = borrowingRepository.findInProgressByMemberId(member.getId());
+        return member.borrow(book, timeService.getCurrentDate(), borrowingRepository.generateNewId(), inProgressBorrowings);
     }
 
     public interface BorrowABookCommand {
