@@ -15,12 +15,13 @@ public final class Borrowing {
     private final ISBN isbn;
     private final LocalDate startDate;
     private final LocalDate maxAuthorizedReturnDate;
+    private LocalDate returnDate;
 
     static Borrowing createNewBorrowing(BorrowingId id, MemberId memberId, ISBN isbn, LocalDate startDate) {
-        return new Borrowing(id, memberId, isbn, startDate, startDate.plusWeeks(3));
+        return new Borrowing(id, memberId, isbn, startDate, startDate.plusWeeks(3), null);
     }
 
-    public Borrowing(BorrowingId id, MemberId memberId, ISBN isbn, LocalDate startDate, LocalDate maxAuthorizedReturnDate) {
+    public Borrowing(BorrowingId id, MemberId memberId, ISBN isbn, LocalDate startDate, LocalDate maxAuthorizedReturnDate, LocalDate returnDate) {
         assertNotNull(id, "borrowingId");
         assertNotNull(memberId, "memberId");
         assertNotNull(isbn, "isbn");
@@ -33,6 +34,7 @@ public final class Borrowing {
         this.isbn = isbn;
         this.startDate = startDate;
         this.maxAuthorizedReturnDate = maxAuthorizedReturnDate;
+        this.returnDate = returnDate;
     }
 
     public ISBN isbn() {
@@ -45,10 +47,15 @@ public final class Borrowing {
         borrowingInterest.setMemberId(memberId.toValueString());
         borrowingInterest.setStartDate(startDate);
         borrowingInterest.setMaxAuthorizedReturnDate(maxAuthorizedReturnDate);
+        borrowingInterest.setReturnDate(returnDate);
     }
 
     public boolean by(MemberId memberId) {
         return this.memberId.equals(memberId);
+    }
+
+    public void saveBookReturnedAt(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
     public interface BorrowingInterest {
@@ -57,5 +64,6 @@ public final class Borrowing {
         void setMemberId(String memberId);
         void setStartDate(LocalDate startDate);
         void setMaxAuthorizedReturnDate(LocalDate maxAuthorizedReturnDate);
+        void setReturnDate(LocalDate returnDate);
     }
 }

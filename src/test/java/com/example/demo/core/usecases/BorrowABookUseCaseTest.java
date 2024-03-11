@@ -75,7 +75,7 @@ class BorrowABookUseCaseTest {
 
         var optBorrowing = borrowingRepository.findById(BorrowingInMemoryRepository.IDS.getFirst());
         assertThat(optBorrowing).isPresent();
-        assertThat(optBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing(BorrowingInMemoryRepository.IDS.getFirst(), memberId, isbn, currentDate, LocalDate.of(2024, 3, 27)));
+        assertThat(optBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing(BorrowingInMemoryRepository.IDS.getFirst(), memberId, isbn, currentDate, LocalDate.of(2024, 3, 27), null));
     }
 
     @Test

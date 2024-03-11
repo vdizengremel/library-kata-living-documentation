@@ -7,6 +7,7 @@ public interface BorrowingRepository {
 
     Optional<Borrowing> findById(BorrowingId id);
     void add(Borrowing borrowing);
+    void update(Borrowing borrowing);
 
     long countByMemberId(MemberId memberId);
 }

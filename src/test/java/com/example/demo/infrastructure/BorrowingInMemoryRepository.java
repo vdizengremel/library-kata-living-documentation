@@ -35,10 +35,14 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
         super(IDS);
     }
 
-
     @Override
     public void add(Borrowing borrowing) {
         this.add(borrowing.getId(), borrowing);
+    }
+
+    @Override
+    public void update(Borrowing borrowing) {
+        this.update(borrowing.getId(), borrowing);
     }
 
     @Override
@@ -52,7 +56,7 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
         final BorrowingData borrowingData = new BorrowingData();
         borrowing.provideInterest(borrowingData);
 
-        return new Borrowing(new BorrowingId(UUID.fromString(borrowingData.id)), MemberId.from(borrowingData.memberId), new ISBN(borrowingData.isbn), borrowingData.startDate, borrowingData.maxAuthorizedReturnDate);
+        return new Borrowing(BorrowingId.fromString(borrowingData.id), MemberId.from(borrowingData.memberId), new ISBN(borrowingData.isbn), borrowingData.startDate, borrowingData.maxAuthorizedReturnDate, borrowingData.returnDate);
     }
 
     @Setter
@@ -62,5 +66,6 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
         public String memberId;
         public LocalDate startDate;
         public LocalDate maxAuthorizedReturnDate;
+        public LocalDate returnDate;
     }
 }

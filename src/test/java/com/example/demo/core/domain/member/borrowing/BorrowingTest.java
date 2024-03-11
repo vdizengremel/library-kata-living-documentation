@@ -29,45 +29,45 @@ class BorrowingTest {
 
     @Test
     void shouldCreateBorrowingWhenAllInformationAreValid() {
-        assertThatCode(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, validStartDate, validMaxAuthorizedReturnDate)).doesNotThrowAnyException();
+        assertThatCode(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, validStartDate, validMaxAuthorizedReturnDate, null)).doesNotThrowAnyException();
     }
 
     @Test
     void shouldThrowWhenPassingNullBorrowingId() {
-        assertThatThrownBy(() -> new Borrowing(null, validMemberId, validIsbn, validStartDate, validMaxAuthorizedReturnDate)).hasMessage("borrowingId should not be null");
+        assertThatThrownBy(() -> new Borrowing(null, validMemberId, validIsbn, validStartDate, validMaxAuthorizedReturnDate, null)).hasMessage("borrowingId should not be null");
     }
 
     @Test
     void shouldThrowWhenPassingNullMemberId() {
-        assertThatThrownBy(() -> new Borrowing(validBorrowingId, null, validIsbn, validStartDate, validMaxAuthorizedReturnDate)).hasMessage("memberId should not be null");
+        assertThatThrownBy(() -> new Borrowing(validBorrowingId, null, validIsbn, validStartDate, validMaxAuthorizedReturnDate, null)).hasMessage("memberId should not be null");
     }
 
     @Test
     void shouldThrowWhenPassingNullIsbn() {
-        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, null, validStartDate, validMaxAuthorizedReturnDate)).hasMessage("isbn should not be null");
+        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, null, validStartDate, validMaxAuthorizedReturnDate, null)).hasMessage("isbn should not be null");
     }
 
     @Test
     void shouldThrowWhenPassingNullStartDate() {
-        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, null, validMaxAuthorizedReturnDate)).hasMessage("startDate should not be null");
+        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, null, validMaxAuthorizedReturnDate, null)).hasMessage("startDate should not be null");
     }
 
     @Test
     void shouldThrowWhenPassingNullMaxAuthorizedReturnDate() {
-        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, validStartDate, null)).hasMessage("maxAuthorizedReturnDate should not be null");
+        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, validStartDate, null, null)).hasMessage("maxAuthorizedReturnDate should not be null");
     }
 
     @Test
     void shouldThrowWhenPassingMaxAuthorizedReturnDateBeforeStartDate() {
         var startDate = LocalDate.of(2024, 3, 6);
         var maxAuthorizedReturnDate = startDate.minusDays(1);
-        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, startDate, maxAuthorizedReturnDate)).hasMessage("maxAuthorizedReturnDate should be after startDate");
+        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, startDate, maxAuthorizedReturnDate, null)).hasMessage("maxAuthorizedReturnDate should be after startDate");
     }
 
     @Test
     void shouldThrowWhenPassingMaxAuthorizedReturnDateEqualToStartDate() {
         var startDate = LocalDate.of(2024, 3, 6);
-        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, startDate, startDate)).hasMessage("maxAuthorizedReturnDate should be after startDate");
+        assertThatThrownBy(() -> new Borrowing(validBorrowingId, validMemberId, validIsbn, startDate, startDate, null)).hasMessage("maxAuthorizedReturnDate should be after startDate");
     }
 
 }
