@@ -36,7 +36,7 @@ class BorrowABookUseCaseTest {
         borrowingRepository = new BorrowingInMemoryRepository();
         timeService = Mockito.mock(TimeService.class);
 
-        borrowABookUseCase = new BorrowABookUseCase(memberRepository, bookRepository, new BorrowingService(borrowingRepository, timeService));
+        borrowABookUseCase = new BorrowABookUseCase(memberRepository, bookRepository, borrowingRepository, timeService);
     }
 
     @Test
@@ -101,8 +101,31 @@ class BorrowABookUseCaseTest {
 
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
-        assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book");
+        assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book: " + BorrowingError.HAS_REACHED_MAX_AUTHORIZED_BORROWING);
         assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(3);
+    }
+
+    @Test
+    void shouldNotBorrowBookWhenMemberHasALateBorrowing() {
+        LocalDate currentDate = LocalDate.of(2024, 3, 6);
+        when(timeService.getCurrentDate()).thenReturn(currentDate);
+
+        MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
+        memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
+
+
+        BorrowingId borrowingId = borrowingRepository.generateNewId();
+        Borrowing initialBorrowing = new Borrowing(borrowingId, memberId, new ISBN("123"), LocalDate.of(2024, 1, 2), LocalDate.of(2024, 1, 23), null);
+        borrowingRepository.add(initialBorrowing);
+
+
+        ISBN isbn = new ISBN("isbn");
+        bookRepository.register(new Book(isbn, "title", "author"));
+
+        var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
+
+        assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book: " + BorrowingError.HAS_LATE_BORROWING);
+        assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(1);
     }
 
     @Test
@@ -149,7 +172,7 @@ class BorrowABookUseCaseTest {
 
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
-        assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book");
+        assertThatThrownBy(() -> borrowABookUseCase.execute(command, new BorrowABookPresenterForTest())).hasMessage("Cannot borrow book: " + BorrowingError.MEMBER_IS_BANNED);
         assertThat(borrowingRepository.countByMemberId(memberId)).isEqualTo(0);
     }
 
@@ -194,8 +217,8 @@ class BorrowABookUseCaseTest {
         }
 
         @Override
-        public String presentCannotBorrowedBook() {
-            throw new RuntimeException("Cannot borrow book");
+        public String presentCannotBorrowedBook(BorrowingError borrowingError) {
+            throw new RuntimeException("Cannot borrow book: " + borrowingError);
         }
     }
 }

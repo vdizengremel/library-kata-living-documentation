@@ -1,5 +1,6 @@
 package com.example.demo.core.domain.member;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface BorrowingRepository {
@@ -10,4 +11,6 @@ public interface BorrowingRepository {
     void update(Borrowing borrowing);
 
     long countByMemberId(MemberId memberId);
+
+    List<Borrowing> findInProgressByMemberId(MemberId memberId);
 }

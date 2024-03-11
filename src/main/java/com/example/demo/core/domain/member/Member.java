@@ -1,10 +1,12 @@
 package com.example.demo.core.domain.member;
 
+import com.example.demo.core.domain.SuccessOrError;
 import com.example.demo.core.domain.book.Book;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class Member {
     @Getter
@@ -19,8 +21,6 @@ public class Member {
     private final String email;
 
     private MemberStatus status;
-
-
 
     public static Member createNewMember(MemberId id, String firstName, String lastName, String email) {
         return new Member(id, firstName, lastName, email, MemberStatus.NEW_MEMBER);
@@ -38,8 +38,24 @@ public class Member {
         return this.email.equals(email);
     }
 
-    Borrowing borrow(Book book, LocalDate startDate, BorrowingId borrowingId) {
-        return Borrowing.createNewBorrowing(borrowingId, getId(), book.getIsbn(), startDate);
+    public SuccessOrError<Borrowing, BorrowingError> borrow(Book book, LocalDate startDate, BorrowingId borrowingId, List<Borrowing> inProgressBorrowings) {
+        if(status == MemberStatus.BANNED) {
+            return SuccessOrError.error(BorrowingError.MEMBER_IS_BANNED);
+        }
+
+        var existALateBorrowing = inProgressBorrowings.stream().anyMatch(borrowing -> borrowing.isLate(startDate));
+
+        if(existALateBorrowing) {
+            return SuccessOrError.error(BorrowingError.HAS_LATE_BORROWING);
+        }
+
+        int maxNumberOfAuthorizedBorrowing = this.getMaxNumberOfAuthorizedBorrowing();
+        long countByMemberId = inProgressBorrowings.size();
+        if(countByMemberId >= maxNumberOfAuthorizedBorrowing) {
+            return SuccessOrError.error(BorrowingError.HAS_REACHED_MAX_AUTHORIZED_BORROWING);
+        }
+
+        return SuccessOrError.success(Borrowing.createNewBorrowing(borrowingId, getId(), book.getIsbn(), startDate));
     }
 
     int getMaxNumberOfAuthorizedBorrowing() {

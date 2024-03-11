@@ -58,6 +58,14 @@ public final class Borrowing {
         this.returnDate = returnDate;
     }
 
+    public boolean isInProgress() {
+        return returnDate == null;
+    }
+
+    public boolean isLate(LocalDate currentDate) {
+        return currentDate.isAfter(maxAuthorizedReturnDate);
+    }
+
     public interface BorrowingInterest {
         void setId(String id);
         void setIsbn(String isbn);

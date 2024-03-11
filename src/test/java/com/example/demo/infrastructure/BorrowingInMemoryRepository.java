@@ -52,6 +52,13 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
                 .count();
     }
 
+    @Override
+    public List<Borrowing> findInProgressByMemberId(MemberId memberId) {
+        return streamData()
+                .filter(borrowing -> borrowing.by(memberId))
+                .filter(Borrowing::isInProgress).toList();
+    }
+
     protected Borrowing copy(Borrowing borrowing) {
         final BorrowingData borrowingData = new BorrowingData();
         borrowing.provideInterest(borrowingData);
