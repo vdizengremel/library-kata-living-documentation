@@ -1,4 +1,4 @@
-package com.example.demo.entrypoints;
+package com.example.demo.entrypoints.book;
 
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.usecases.RegisterABookUseCase;

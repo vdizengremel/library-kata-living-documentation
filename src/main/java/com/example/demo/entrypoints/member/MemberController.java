@@ -1,4 +1,4 @@
-package com.example.demo.entrypoints;
+package com.example.demo.entrypoints.member;
 
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.usecases.AddMemberUseCase;
@@ -19,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping("/")
-    public AddMemberResponseBodyDTO addMember(@RequestBody AddMemberRequestBodyDTO addMemberRequestBodyDTO) {
+    public MemberHttpDTO addMember(@RequestBody AddMemberRequestBodyDTO addMemberRequestBodyDTO) {
         return addMemberUseCase.execute(addMemberRequestBodyDTO, new AddMemberUseCaseHttpPresenter());
     }
 
@@ -59,17 +59,17 @@ public class MemberController {
         };
     }
 
-    static class AddMemberUseCaseHttpPresenter implements AddMemberUseCase.AddMemberUseCasePresenter<AddMemberResponseBodyDTO> {
+    static class AddMemberUseCaseHttpPresenter implements AddMemberUseCase.AddMemberUseCasePresenter<MemberHttpDTO> {
 
         @Override
-        public AddMemberResponseBodyDTO presentAddedMember(Member addedMember) {
-            AddMemberResponseBodyDTO responseBodyDTO = new AddMemberResponseBodyDTO();
+        public MemberHttpDTO presentAddedMember(Member addedMember) {
+            MemberHttpDTO responseBodyDTO = new MemberHttpDTO();
             addedMember.provideInterest(responseBodyDTO);
             return responseBodyDTO;
         }
 
         @Override
-        public AddMemberResponseBodyDTO presentErrorAnotherMemberExistsWithSameEmail() {
+        public MemberHttpDTO presentErrorAnotherMemberExistsWithSameEmail() {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Another member with same email exists");
         }
     }

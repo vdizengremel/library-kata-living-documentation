@@ -1,4 +1,4 @@
-package com.example.demo.entrypoints;
+package com.example.demo.entrypoints.member;
 
 import com.example.demo.core.usecases.AddMemberUseCase;
 import lombok.Getter;

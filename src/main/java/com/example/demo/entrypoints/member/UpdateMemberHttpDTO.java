@@ -1,4 +1,4 @@
-package com.example.demo.entrypoints;
+package com.example.demo.entrypoints.member;
 
 import lombok.Getter;
 
