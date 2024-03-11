@@ -1,21 +1,22 @@
 package com.example.demo.entrypoints;
 
+import com.example.demo.core.domain.book.Book;
+import com.example.demo.core.usecases.GetBookByIsbnUseCase;
 import com.example.demo.core.usecases.RegisterABookUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("book")
 public class BookController {
     private final RegisterABookUseCase registerABookUseCase;
+    private final GetBookByIsbnUseCase getBookByIsbnUseCase;
 
-    public BookController(RegisterABookUseCase registerABookUseCase) {
+    public BookController(RegisterABookUseCase registerABookUseCase, GetBookByIsbnUseCase getBookByIsbnUseCase) {
         this.registerABookUseCase = registerABookUseCase;
+        this.getBookByIsbnUseCase = getBookByIsbnUseCase;
     }
 
     @PostMapping("/")
@@ -31,5 +32,22 @@ public class BookController {
                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
            }
        });
+    }
+
+    @GetMapping("/{id}")
+    public BookHttpDTO getById(@PathVariable("id") String bookId) {
+        return getBookByIsbnUseCase.execute(() -> bookId, new GetBookByIsbnUseCase.GetBookByIsbnPresenter<>() {
+            @Override
+            public BookHttpDTO presentBook(Book book) {
+                BookHttpDTO bookHttpDTO = new BookHttpDTO();
+                book.provideInterest(bookHttpDTO);
+                return bookHttpDTO;
+            }
+
+            @Override
+            public BookHttpDTO presentBookNotFound() {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        });
     }
 }
