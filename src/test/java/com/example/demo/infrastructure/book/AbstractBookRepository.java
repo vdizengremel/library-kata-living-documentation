@@ -46,7 +46,6 @@ public abstract class AbstractBookRepository<T extends BookRepository> {
         Optional<Book> optionalBook = bookRepository.findByIsbn(new ISBN("456"));
         assertThat(optionalBook).isPresent();
         assertThat(optionalBook.get()).usingRecursiveComparison().isEqualTo(new Book(new ISBN("456"), "Star Wars", "Lucas"));
-        System.out.println("/////////////////////// end of test");
     }
 
     @Test
