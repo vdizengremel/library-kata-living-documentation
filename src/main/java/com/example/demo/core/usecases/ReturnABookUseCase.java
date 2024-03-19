@@ -1,11 +1,11 @@
 package com.example.demo.core.usecases;
 
+import com.example.annotation.UseCase;
 import com.example.demo.core.domain.TimeService;
 import com.example.demo.core.domain.member.BorrowingId;
 import com.example.demo.core.domain.member.BorrowingRepository;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 public class ReturnABookUseCase {
     private final BorrowingRepository borrowingRepository;
     private final TimeService timeService;

@@ -1,13 +1,13 @@
 package com.example.demo.core.usecases;
 
+import com.example.annotation.UseCase;
 import com.example.demo.core.domain.book.Book;
-import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.book.BookRepository;
-import org.springframework.stereotype.Service;
+import com.example.demo.core.domain.book.ISBN;
 
 import java.util.Optional;
 
-@Service
+@UseCase
 public class RegisterABookUseCase {
     private final BookRepository bookRepository;
 

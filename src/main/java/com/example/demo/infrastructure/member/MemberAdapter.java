@@ -1,16 +1,14 @@
 package com.example.demo.infrastructure.member;
 
+import com.example.annotation.Adapter;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
-@Profile("!inMemoryRepository")
+@Adapter
 public class MemberAdapter implements MemberRepository {
     private final MemberMongoSpringRepository memberMongoSpringRepository;
 

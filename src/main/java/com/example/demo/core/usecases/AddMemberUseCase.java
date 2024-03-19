@@ -1,10 +1,10 @@
 package com.example.demo.core.usecases;
 
+import com.example.annotation.UseCase;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberRepository;
-import org.springframework.stereotype.Service;
 
-@Service
+@UseCase
 public class AddMemberUseCase {
     private final MemberRepository memberRepository;
 
