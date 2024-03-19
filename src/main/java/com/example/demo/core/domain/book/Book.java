@@ -2,6 +2,9 @@ package com.example.demo.core.domain.book;
 
 import lombok.Getter;
 
+/**
+ * Book to be borrowed.
+ */
 public class Book {
     @Getter
     private final ISBN isbn;
