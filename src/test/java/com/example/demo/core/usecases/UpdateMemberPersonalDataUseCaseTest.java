@@ -26,7 +26,7 @@ class UpdateMemberPersonalDataUseCaseTest {
     @Test
     void shouldUpdatePersonalDataWhenMemberExists() {
         MemberId id = memberRepository.generateNewId();
-        var member = Member.createNewMember(id, "Jean", "Dupont", "jean.d@smth.com");
+        var member = Member.registerMember(id, "Jean", "Dupont", "jean.d@smth.com");
         memberRepository.add(member);
 
         var command = CommandForTest.builder().firstName("Paul").lastName("Durand").memberId(id.toValueString()).build();
@@ -34,7 +34,7 @@ class UpdateMemberPersonalDataUseCaseTest {
         assertThat(result).isEqualTo("success");
 
         var updatedMember = memberRepository.findById(id);
-        var expectedMember = Member.createNewMember(id, "Paul", "Durand", "jean.d@smth.com");
+        var expectedMember = Member.registerMember(id, "Paul", "Durand", "jean.d@smth.com");
 
         assertThat(updatedMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }

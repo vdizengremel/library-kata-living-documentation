@@ -17,7 +17,7 @@ public class AddMemberUseCase {
             return presenter.presentErrorAnotherMemberExistsWithSameEmail();
         }
 
-        var member = Member.createNewMember(
+        var member = Member.registerMember(
                 memberRepository.generateNewId(),
                 command.getFirstName(),
                 command.getLastName(),

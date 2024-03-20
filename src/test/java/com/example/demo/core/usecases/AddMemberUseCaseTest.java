@@ -37,7 +37,7 @@ public class AddMemberUseCaseTest {
         addMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
 
         Member actual = getFirstCreatedMember();
-        assertThat(actual).usingRecursiveComparison().isEqualTo(Member.createNewMember(MemberInMemoryRepository.MEMBER_IDS.getFirst(), "Jean", "Dupond", "jean.dupond@any.com"));
+        assertThat(actual).usingRecursiveComparison().isEqualTo(Member.registerMember(MemberInMemoryRepository.MEMBER_IDS.getFirst(), "Jean", "Dupond", "jean.dupond@any.com"));
     }
 
     @Test

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DocGenerator {
 
@@ -37,9 +39,10 @@ public class DocGenerator {
     private static void processClass(JavaClass clss, PrintWriter writer) {
         writer.println("");
         writer.println("## *" + clss.getSimpleName() + "*");
-        writer.println(clss.getComment());
+        writer.println(sanitiseComment(clss.getComment()));
         writer.println("");
         if (clss.isEnum()) {
+            writer.println("Values:");
             for (JavaField field : clss.getEnumConstants()) {
                 printEnumConstant(field, writer);
             }
@@ -101,7 +104,23 @@ public class DocGenerator {
     }
 
     private static String getCommentText(JavaAnnotatedElement element) {
-        return Optional.ofNullable(element.getComment()).map(comment -> ": " + comment).orElse("");
+        return Optional.ofNullable(element.getComment()).map(DocGenerator::sanitiseComment).map(comment -> ": " + comment).orElse("");
+    }
+
+
+    public static String sanitiseComment(String comment) {
+        System.out.println(comment);
+        Pattern pattern = Pattern.compile("\\{@link\\s+([^\\s}]+)\\s+([^}]+)\\}");
+        Matcher matcher = pattern.matcher(comment);
+        StringBuilder sb = new StringBuilder();
+
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, matcher.group(2));
+        }
+
+
+        matcher.appendTail(sb);
+        return sb.toString();
     }
 
     private static Collection<JavaClass> listClasses() {
@@ -109,7 +128,7 @@ public class DocGenerator {
         builder.addSourceTree(new File("src/main/java"));
 
         JavaPackage packageByName = builder.getPackageByName(PACKAGE_NAME_TO_SCAN);
-        return getAllSubPackages(packageByName).stream().flatMap(p -> p.getClasses().stream()).toList();
+        return getAllSubPackages(packageByName).stream().flatMap(p -> p.getClasses().stream()).sorted((o1, o2) -> o1.getSimpleName().compareToIgnoreCase(o2.getSimpleName())).toList();
     }
 
     private static Collection<JavaPackage> getAllSubPackages(JavaPackage javaPackage) {

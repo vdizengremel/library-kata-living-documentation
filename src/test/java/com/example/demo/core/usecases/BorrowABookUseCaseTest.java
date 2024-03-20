@@ -50,7 +50,7 @@ class BorrowABookUseCaseTest {
     @Test
     void shouldPresentErrorWhenBookDoesNotExists() {
         MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
-        memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
+        memberRepository.add(Member.registerMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
 
         var command = BorrowABookCommandForTest.builder().bookIsbn("isbn").memberId(memberId.toValueString()).build();
 
@@ -63,7 +63,7 @@ class BorrowABookUseCaseTest {
         when(timeService.getCurrentDate()).thenReturn(currentDate);
 
         MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
-        memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
+        memberRepository.add(Member.registerMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
 
         ISBN isbn = new ISBN("isbn");
         bookRepository.register(new Book(isbn, "title", "author"));
@@ -84,7 +84,7 @@ class BorrowABookUseCaseTest {
         when(timeService.getCurrentDate()).thenReturn(currentDate);
 
         MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
-        memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
+        memberRepository.add(Member.registerMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
 
         List<String> isbns = List.of(
                 "Book 1",
@@ -111,7 +111,7 @@ class BorrowABookUseCaseTest {
         when(timeService.getCurrentDate()).thenReturn(currentDate);
 
         MemberId memberId = MemberInMemoryRepository.MEMBER_IDS.getFirst();
-        memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
+        memberRepository.add(Member.registerMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
 
 
         BorrowingId borrowingId = borrowingRepository.generateNewId();
@@ -134,10 +134,10 @@ class BorrowABookUseCaseTest {
         when(timeService.getCurrentDate()).thenReturn(currentDate);
 
         MemberId memberId = memberRepository.generateNewId();
-        memberRepository.add(Member.createNewMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
+        memberRepository.add(Member.registerMember(memberId, "Jean", "Dupond", "jean.dupond@smth.com"));
 
         MemberId anotherMemberId = memberRepository.generateNewId();
-        memberRepository.add(Member.createNewMember(anotherMemberId, "Paul", "Durand", "paul.durand@smth.com"));
+        memberRepository.add(Member.registerMember(anotherMemberId, "Paul", "Durand", "paul.durand@smth.com"));
 
         List<String> isbns = List.of(
                 "Book 1",

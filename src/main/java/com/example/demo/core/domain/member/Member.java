@@ -27,7 +27,16 @@ public class Member {
 
     private MemberStatus status;
 
-    public static Member createNewMember(MemberId id, String firstName, String lastName, String email) {
+    /**
+     * Register member.
+     *
+     * @param id
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @return new member
+     */
+    public static Member registerMember(MemberId id, String firstName, String lastName, String email) {
         return new Member(id, firstName, lastName, email, MemberStatus.NEW_MEMBER);
     }
 

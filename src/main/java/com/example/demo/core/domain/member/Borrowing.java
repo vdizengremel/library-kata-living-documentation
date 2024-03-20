@@ -10,7 +10,7 @@ import static com.example.demo.core.domain.Assertions.assertDateIsAfter;
 import static com.example.demo.core.domain.Assertions.assertNotNull;
 
 /**
- * Borrowing of a book by a member.
+ * Borrowing of a {@link com.example.demo.core.domain.book.Book book} by a {@link Member member}.
  */
 @CoreConcept
 public final class Borrowing {
