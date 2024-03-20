@@ -8,6 +8,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Represents an implementation of a domain interface (like a repository).
+ *
+ * @see <a href="https://alistair.cockburn.us/hexagonal-architecture/">Defination of hexagonal architecture also known as ports and adapters</a>
+ * @see <a href="https://refactoring.guru/design-patterns/adapter">Adapter pattern</a>
+ */
 @Component
 @Profile("!inMemoryRepository")
 @Target(ElementType.TYPE)

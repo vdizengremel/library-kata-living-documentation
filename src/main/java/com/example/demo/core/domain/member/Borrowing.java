@@ -1,5 +1,6 @@
 package com.example.demo.core.domain.member;
 
+import com.example.annotation.CoreConcept;
 import com.example.demo.core.domain.book.ISBN;
 import lombok.Getter;
 
@@ -8,13 +9,22 @@ import java.time.LocalDate;
 import static com.example.demo.core.domain.Assertions.assertDateIsAfter;
 import static com.example.demo.core.domain.Assertions.assertNotNull;
 
+/**
+ * Borrowing of a book by a member.
+ */
+@CoreConcept
 public final class Borrowing {
     @Getter
     private final BorrowingId id;
     private final MemberId memberId;
     private final ISBN isbn;
     private final LocalDate startDate;
+
+    /**
+     * Date beyond which the borrowing is considered late
+     */
     private final LocalDate maxAuthorizedReturnDate;
+
     private LocalDate returnDate;
 
     static Borrowing createNewBorrowing(BorrowingId id, MemberId memberId, ISBN isbn, LocalDate startDate) {
@@ -54,7 +64,12 @@ public final class Borrowing {
         return this.memberId.equals(memberId);
     }
 
-    public void saveBookReturnedAt(LocalDate returnDate) {
+    /**
+     * Return a book.
+     *
+     * @param returnDate date which book was returned
+     */
+    public void returnBookAt(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
 
@@ -68,10 +83,15 @@ public final class Borrowing {
 
     public interface BorrowingInterest {
         void setId(String id);
+
         void setIsbn(String isbn);
+
         void setMemberId(String memberId);
+
         void setStartDate(LocalDate startDate);
+
         void setMaxAuthorizedReturnDate(LocalDate maxAuthorizedReturnDate);
+
         void setReturnDate(LocalDate returnDate);
     }
 }

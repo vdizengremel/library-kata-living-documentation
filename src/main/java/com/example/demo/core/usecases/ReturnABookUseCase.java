@@ -25,7 +25,7 @@ public class ReturnABookUseCase {
         var borrowing = optionalBorrowing.get();
         var currentDate = timeService.getCurrentDate();
 
-        borrowing.saveBookReturnedAt(currentDate);
+        borrowing.returnBookAt(currentDate);
 
         borrowingRepository.update(borrowing);
 

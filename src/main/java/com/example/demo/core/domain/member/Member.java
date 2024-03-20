@@ -1,5 +1,6 @@
 package com.example.demo.core.domain.member;
 
+import com.example.annotation.CoreConcept;
 import com.example.demo.core.domain.SuccessOrError;
 import com.example.demo.core.domain.book.Book;
 import lombok.Getter;
@@ -8,6 +9,10 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Person that registered to the library to borrow books.
+ */
+@CoreConcept
 public class Member {
     @Getter
     private final MemberId id;
@@ -38,27 +43,36 @@ public class Member {
         return this.email.equals(email);
     }
 
+    /**
+     * Borrow a book.
+     *
+     * @param book                 book to be borrowed
+     * @param startDate            start date of borrowing
+     * @param borrowingId          borrowing id
+     * @param inProgressBorrowings in progress borrowings to check if member can borrow a new book
+     * @return borrowing if succeeds or error if member cannot borrow book.
+     */
     public SuccessOrError<Borrowing, BorrowingError> borrow(Book book, LocalDate startDate, BorrowingId borrowingId, List<Borrowing> inProgressBorrowings) {
-        if(status == MemberStatus.BANNED) {
+        if (status == MemberStatus.BANNED) {
             return SuccessOrError.error(BorrowingError.MEMBER_IS_BANNED);
         }
 
         var existALateBorrowing = inProgressBorrowings.stream().anyMatch(borrowing -> borrowing.isLate(startDate));
 
-        if(existALateBorrowing) {
+        if (existALateBorrowing) {
             return SuccessOrError.error(BorrowingError.HAS_LATE_BORROWING);
         }
 
         int maxNumberOfAuthorizedBorrowing = this.getMaxNumberOfAuthorizedBorrowing();
         long countByMemberId = inProgressBorrowings.size();
-        if(countByMemberId >= maxNumberOfAuthorizedBorrowing) {
+        if (countByMemberId >= maxNumberOfAuthorizedBorrowing) {
             return SuccessOrError.error(BorrowingError.HAS_REACHED_MAX_AUTHORIZED_BORROWING);
         }
 
         return SuccessOrError.success(Borrowing.createNewBorrowing(borrowingId, getId(), book.getIsbn(), startDate));
     }
 
-    int getMaxNumberOfAuthorizedBorrowing() {
+    private int getMaxNumberOfAuthorizedBorrowing() {
         return switch (status) {
             case NEW_MEMBER -> 3;
             case REGULAR -> 5;

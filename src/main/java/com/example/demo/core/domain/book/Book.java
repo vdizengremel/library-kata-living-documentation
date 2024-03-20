@@ -1,10 +1,12 @@
 package com.example.demo.core.domain.book;
 
+import com.example.annotation.CoreConcept;
 import lombok.Getter;
 
 /**
  * Book to be borrowed.
  */
+@CoreConcept
 public class Book {
     @Getter
     private final ISBN isbn;
