@@ -32,6 +32,10 @@ public class MemberInMemoryRepository extends AbstractInMemoryRepository<MemberI
         super(MEMBER_IDS);
     }
 
+    public MemberInMemoryRepository(List<MemberId> memberIds) {
+        super(memberIds);
+    }
+
     @Override
     public void add(Member member) {
         this.add(member.getId(), member);

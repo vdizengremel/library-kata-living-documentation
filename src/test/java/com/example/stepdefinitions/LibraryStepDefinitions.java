@@ -18,18 +18,13 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LibraryStepDefinitions {
-    private final MemberInMemoryRepository memberInMemoryRepository;
-    private final RegisterMemberUseCase registerMemberUseCase;
+    private MemberInMemoryRepository memberInMemoryRepository;
 
     private PresenterException thrownException;
     private Member lastRegisteredMember;
 
-    public LibraryStepDefinitions() {
-        memberInMemoryRepository = new MemberInMemoryRepository();
-        registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
-    }
 
-    @Given("following members exist:")
+    @Given("already registered members:")
     public void followingMembersExist(List<Map<String, String>> existingMembers) {
         existingMembers.forEach(this::registerMember);
     }
@@ -45,11 +40,11 @@ public class LibraryStepDefinitions {
         }
     }
 
-    @Then("last registered member should be:")
-    public void aMemberShouldBeRegisteredWith(List<Map<String, String>> personInformation) {
-        var person = personInformation.getFirst();
-        MemberId lastGeneratedId = memberInMemoryRepository.getLastGeneratedId();
-        Member expectedMember = new Member(lastGeneratedId, person.get("firstname"), person.get("lastname"), person.get("email"), MemberStatus.NEW_MEMBER);
+    @Then("a registered member should be:")
+    public void aMemberShouldBeRegisteredWith(List<Map<String, String>> registeredMember) {
+        var member = registeredMember.getFirst();
+        MemberId lastGeneratedId = MemberId.from(member.get("id"));
+        Member expectedMember = new Member(lastGeneratedId, member.get("firstname"), member.get("lastname"), member.get("email"), MemberStatus.NEW_MEMBER);
 
         assertThat(lastRegisteredMember).usingRecursiveComparison().isEqualTo(expectedMember);
 
@@ -65,12 +60,19 @@ public class LibraryStepDefinitions {
                 .email(existingMember.get("email"))
                 .build();
 
+        var registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
         this.lastRegisteredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
     }
 
-    @Then("the result should be an error indicating a member with same email exists")
-    public void theResultShouldBeAnErrorIndicatingAMemberWithSameEmailExists() {
-        assertThat(thrownException).hasMessage("AnotherMemberExistsWithSameEmail");
+    @Then("the result should be an error indicating {}")
+    public void theResultShouldBeAnErrorIndicatingAMemberWithSameEmailExists(String expectingMessage) {
+        assertThat(thrownException).hasMessage(expectingMessage);
+    }
+
+    @Given("next generated member ids will be:")
+    public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
+        var memberIds = uuids.stream().map(MemberId::from).toList();
+        memberInMemoryRepository = new MemberInMemoryRepository(memberIds);
     }
 
     @Getter
@@ -82,7 +84,6 @@ public class LibraryStepDefinitions {
     }
 
     static class AddMemberUseCasePresenterForTest implements RegisterMemberUseCase.AddMemberUseCasePresenter<Member> {
-
         @Override
         public Member presentAddedMember(Member addedMember) {
             return addedMember;
@@ -90,7 +91,7 @@ public class LibraryStepDefinitions {
 
         @Override
         public Member presentErrorAnotherMemberExistsWithSameEmail() {
-            throw new PresenterException("AnotherMemberExistsWithSameEmail");
+            throw new PresenterException("a member with same email exists");
         }
     }
 
