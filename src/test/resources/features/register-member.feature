@@ -32,7 +32,7 @@ Feature: Register a member
     When a person registers with information:
       | firstname | lastname | email         |
       | Matt      | Lejaune  | matt@smth.com |
-    Then the result should be an error indicating a member with same email exists
+    Then the member registration result should be an error indicating a member with same email exists
     And a registered member should be:
       | id                                   | firstname | lastname | email         |
       | e0e50076-7c78-4344-97eb-4adf30e10a5c | Matt      | Legris   | matt@smth.com |

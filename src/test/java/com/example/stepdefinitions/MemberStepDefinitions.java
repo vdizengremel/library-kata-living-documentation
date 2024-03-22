@@ -17,12 +17,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LibraryStepDefinitions {
+public class MemberStepDefinitions {
     private MemberInMemoryRepository memberInMemoryRepository;
 
     private PresenterException thrownException;
     private Member lastRegisteredMember;
 
+
+    @Given("next generated member ids will be:")
+    public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
+        var memberIds = uuids.stream().map(MemberId::from).toList();
+        memberInMemoryRepository = new MemberInMemoryRepository(memberIds);
+    }
 
     @Given("already registered members:")
     public void followingMembersExist(List<Map<String, String>> existingMembers) {
@@ -53,6 +59,11 @@ public class LibraryStepDefinitions {
         assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }
 
+    @Then("the member registration result should be an error indicating {}")
+    public void theResultShouldBeAnErrorIndicatingAMemberWithSameEmailExists(String expectingMessage) {
+        assertThat(thrownException).hasMessage(expectingMessage);
+    }
+
     private void registerMember(Map<String, String> existingMember) {
         var command = AddMemberUseCaseCommandForTest.builder()
                 .firstName(existingMember.get("firstname"))
@@ -62,17 +73,6 @@ public class LibraryStepDefinitions {
 
         var registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
         this.lastRegisteredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
-    }
-
-    @Then("the result should be an error indicating {}")
-    public void theResultShouldBeAnErrorIndicatingAMemberWithSameEmailExists(String expectingMessage) {
-        assertThat(thrownException).hasMessage(expectingMessage);
-    }
-
-    @Given("next generated member ids will be:")
-    public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
-        var memberIds = uuids.stream().map(MemberId::from).toList();
-        memberInMemoryRepository = new MemberInMemoryRepository(memberIds);
     }
 
     @Getter
@@ -92,12 +92,6 @@ public class LibraryStepDefinitions {
         @Override
         public Member presentErrorAnotherMemberExistsWithSameEmail() {
             throw new PresenterException("a member with same email exists");
-        }
-    }
-
-    static class PresenterException extends RuntimeException {
-        public PresenterException(String message) {
-            super(message);
         }
     }
 }
