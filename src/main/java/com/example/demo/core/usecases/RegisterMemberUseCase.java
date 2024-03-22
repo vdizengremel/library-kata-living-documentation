@@ -5,10 +5,10 @@ import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberRepository;
 
 @UseCase
-public class AddMemberUseCase {
+public class RegisterMemberUseCase {
     private final MemberRepository memberRepository;
 
-    public AddMemberUseCase(MemberRepository memberRepository) {
+    public RegisterMemberUseCase(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 

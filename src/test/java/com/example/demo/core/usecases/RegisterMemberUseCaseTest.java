@@ -12,20 +12,20 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class AddMemberUseCaseTest {
-    private AddMemberUseCase addMemberUseCase;
+public class RegisterMemberUseCaseTest {
+    private RegisterMemberUseCase registerMemberUseCase;
     private MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
         memberRepository = new MemberInMemoryRepository();
-        addMemberUseCase = new AddMemberUseCase(memberRepository);
+        registerMemberUseCase = new RegisterMemberUseCase(memberRepository);
     }
 
     @Test
     void shouldPresentCreatedMember_WhenMemberDoesNotExist() {
         AddMemberUseCaseCommandForTest addMemberUseCaseCommand = AddMemberUseCaseCommandForTest.builder().firstName("firstname").build();
-        Member result = addMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
+        Member result = registerMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
 
         Member member = getFirstCreatedMember();
         assertThat(result).usingRecursiveComparison().isEqualTo(member);
@@ -34,7 +34,7 @@ public class AddMemberUseCaseTest {
     @Test
     void shouldAddMemberWithCorrectInformation_WhenMemberDoesNotExist() {
         AddMemberUseCaseCommandForTest addMemberUseCaseCommand = AddMemberUseCaseCommandForTest.builder().firstName("Jean").lastName("Dupond").email("jean.dupond@any.com").build();
-        addMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
+        registerMemberUseCase.execute(addMemberUseCaseCommand, new AddMemberUseCasePresenterForTest());
 
         Member actual = getFirstCreatedMember();
         assertThat(actual).usingRecursiveComparison().isEqualTo(Member.registerMember(MemberInMemoryRepository.MEMBER_IDS.getFirst(), "Jean", "Dupond", "jean.dupond@any.com"));
@@ -46,8 +46,8 @@ public class AddMemberUseCaseTest {
         var firstAddMemberUseCaseCommandToCreateMember = builder.build();
         var secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail = builder.build();
 
-        addMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
-        assertThatThrownBy(() -> addMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest()))
+        registerMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
+        assertThatThrownBy(() -> registerMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest()))
                 .hasMessage("AnotherMemberExistsWithSameEmail");
     }
 
@@ -56,10 +56,10 @@ public class AddMemberUseCaseTest {
         var builder = AddMemberUseCaseCommandForTest.builder().firstName("Jean").lastName("Dupond").email("jean.dupond@any.com");
         var firstAddMemberUseCaseCommandToCreateMember = builder.build();
 
-        Member addedResult = addMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
+        Member addedResult = registerMemberUseCase.execute(firstAddMemberUseCaseCommandToCreateMember, new AddMemberUseCasePresenterForTest());
 
         var secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail = builder.firstName("Paul").build();
-        assertThatThrownBy(() -> addMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest()));
+        assertThatThrownBy(() -> registerMemberUseCase.execute(secondAddMemberUseCaseCommandToTryAddingSameMemberWithSameEmail, new AddMemberUseCasePresenterForTest()));
 
         var count = memberRepository.countAll();
         assertThat(count).isEqualTo(1);
@@ -76,13 +76,13 @@ public class AddMemberUseCaseTest {
 
     @Getter
     @Builder
-    static class AddMemberUseCaseCommandForTest implements AddMemberUseCase.AddMemberUseCaseCommand {
+    static class AddMemberUseCaseCommandForTest implements RegisterMemberUseCase.AddMemberUseCaseCommand {
         private String firstName;
         private String lastName;
         private String email;
     }
 
-    static class AddMemberUseCasePresenterForTest implements AddMemberUseCase.AddMemberUseCasePresenter<Member> {
+    static class AddMemberUseCasePresenterForTest implements RegisterMemberUseCase.AddMemberUseCasePresenter<Member> {
 
         @Override
         public Member presentAddedMember(Member addedMember) {
@@ -91,7 +91,7 @@ public class AddMemberUseCaseTest {
 
         @Override
         public Member presentErrorAnotherMemberExistsWithSameEmail() {
-            throw new RuntimeException("AnotherMemberExistsWithSameEmail", new Throwable());
+            throw new RuntimeException("AnotherMemberExistsWithSameEmail");
         }
     }
 }

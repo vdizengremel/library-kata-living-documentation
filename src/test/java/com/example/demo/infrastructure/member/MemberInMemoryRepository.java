@@ -21,7 +21,8 @@ public class MemberInMemoryRepository extends AbstractInMemoryRepository<MemberI
     public static final List<MemberId> MEMBER_IDS = Stream.of(
                     "001b0068-1eb5-4c65-85c4-1b1eb788ecd5",
                     "111a0068-1e32-4c65-85c4-1b1eb788ecd5",
-                    "222c0068-1ab8-4c65-85c4-1b1eb788ecd5"
+                    "222c0068-1ab8-4c65-85c4-1b1eb788ecd5",
+                    "aa695a81-fd37-4f0a-a5db-292097b21cc9"
             )
             .map(UUID::fromString)
             .map(MemberId::new)

@@ -1,7 +1,7 @@
 package com.example.demo.entrypoints.member;
 
 import com.example.demo.core.domain.member.Member;
-import com.example.demo.core.usecases.AddMemberUseCase;
+import com.example.demo.core.usecases.RegisterMemberUseCase;
 import com.example.demo.core.usecases.UpdateMemberPersonalDataUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,17 +10,17 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("member")
 public class MemberController {
-    private final AddMemberUseCase addMemberUseCase;
+    private final RegisterMemberUseCase registerMemberUseCase;
     private final UpdateMemberPersonalDataUseCase updateMemberPersonalDataUseCase;
 
-    public MemberController(AddMemberUseCase addMemberUseCase, UpdateMemberPersonalDataUseCase updateMemberPersonalDataUseCase) {
-        this.addMemberUseCase = addMemberUseCase;
+    public MemberController(RegisterMemberUseCase registerMemberUseCase, UpdateMemberPersonalDataUseCase updateMemberPersonalDataUseCase) {
+        this.registerMemberUseCase = registerMemberUseCase;
         this.updateMemberPersonalDataUseCase = updateMemberPersonalDataUseCase;
     }
 
     @PostMapping("/")
     public MemberHttpDTO addMember(@RequestBody AddMemberRequestBodyDTO addMemberRequestBodyDTO) {
-        return addMemberUseCase.execute(addMemberRequestBodyDTO, new AddMemberUseCaseHttpPresenter());
+        return registerMemberUseCase.execute(addMemberRequestBodyDTO, new AddMemberUseCaseHttpPresenter());
     }
 
     @PutMapping("/{id}")
@@ -59,7 +59,7 @@ public class MemberController {
         };
     }
 
-    static class AddMemberUseCaseHttpPresenter implements AddMemberUseCase.AddMemberUseCasePresenter<MemberHttpDTO> {
+    static class AddMemberUseCaseHttpPresenter implements RegisterMemberUseCase.AddMemberUseCasePresenter<MemberHttpDTO> {
 
         @Override
         public MemberHttpDTO presentAddedMember(Member addedMember) {

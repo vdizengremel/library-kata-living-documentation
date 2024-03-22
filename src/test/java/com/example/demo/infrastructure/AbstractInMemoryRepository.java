@@ -49,4 +49,8 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
         dataById.clear();
         idIndex = 0;
     }
+
+    public ID getLastGeneratedId() {
+        return ids.get(idIndex - 1);
+    }
 }
