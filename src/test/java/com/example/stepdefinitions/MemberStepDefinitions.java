@@ -18,16 +18,22 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberStepDefinitions {
+    private final World world;
     private MemberInMemoryRepository memberInMemoryRepository;
 
     private PresenterException thrownException;
     private Member lastRegisteredMember;
+
+    public MemberStepDefinitions(World world){
+        this.world = world;
+    }
 
 
     @Given("next generated member ids will be:")
     public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
         var memberIds = uuids.stream().map(MemberId::from).toList();
         memberInMemoryRepository = new MemberInMemoryRepository(memberIds);
+        world.memberInMemoryRepository = memberInMemoryRepository;
     }
 
     @Given("already registered members:")

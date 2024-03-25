@@ -35,6 +35,10 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
         super(IDS);
     }
 
+    public BorrowingInMemoryRepository(List<BorrowingId> borrowingIds) {
+        super(borrowingIds);
+    }
+
     @Override
     public void add(Borrowing borrowing) {
         this.add(borrowing.getId(), borrowing);

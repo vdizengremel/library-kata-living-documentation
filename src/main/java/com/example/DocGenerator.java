@@ -37,6 +37,7 @@ public class DocGenerator {
     }
 
     private static void processClass(JavaClass clss, PrintWriter writer) {
+        System.out.println(clss.getSource().getImports());
         writer.println("");
         writer.println("## *" + clss.getSimpleName() + "*");
         writer.println(sanitiseComment(clss.getComment()));

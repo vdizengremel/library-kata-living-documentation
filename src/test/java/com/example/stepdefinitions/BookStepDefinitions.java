@@ -18,11 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookStepDefinitions {
     private final BookInMemoryRepository bookInMemoryRepository;
+    private final World world;
 
     private PresenterException thrownException;
 
-    public BookStepDefinitions() {
+    public BookStepDefinitions(World world) {
+        this.world = world;
         this.bookInMemoryRepository = new BookInMemoryRepository();
+        world.bookInMemoryRepository = this.bookInMemoryRepository;
     }
 
     @Given("already registered books:")
