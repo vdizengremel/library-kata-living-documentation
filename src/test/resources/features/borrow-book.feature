@@ -35,18 +35,18 @@ Feature: Borrow a book
       | 0747532745    |
       | 0553897845    |
     When member with id 4c502830-aca2-4c19-96c6-dd60959a1601 borrow the book with ISBN 2253159913
-    Then the borrowing result should be an error indicating member has reached the maximum amount of borrowed books
+    Then the borrowing should fail because member has reached the maximum amount of borrowed books
 
   Scenario: Member has not returned a book in time
     Given member with id 4c502830-aca2-4c19-96c6-dd60959a1601 has already borrowed following books at 2024-02-06 with ISBN:
       | 9780425054710 |
     When member with id 4c502830-aca2-4c19-96c6-dd60959a1601 borrow the book with ISBN 2253159913
-    Then the borrowing result should be an error indicating member has not returned a book in time
+    Then the borrowing should fail because member has not returned a book in time
 
   Scenario: Member does not exist
     When member with id 11122233-1122-1122-aabb-aaaabbbbcccc borrow the book with ISBN 2253159913
-    Then the borrowing result should be an error indicating member does not exist
+    Then the borrowing should fail because member does not exist
 
   Scenario: Book does not exist
     When member with id 4c502830-aca2-4c19-96c6-dd60959a1601 borrow the book with ISBN 1112223333
-    Then the borrowing result should be an error indicating book does not exist
+    Then the borrowing should fail because book does not exist

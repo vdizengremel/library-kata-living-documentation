@@ -54,7 +54,12 @@ public class BookStepDefinitions {
         assertThat(optionalBook.get()).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
-    void registerBook(Map<String, String> bookData) {
+    @Then("the book registration result should be an error indicating {}")
+    public void theBookRegistrationResultShouldBeAnErrorIndicatingABookWithSameISBNIsAlreadyRegistered(String expectedMessage) {
+        assertThat(thrownException).hasMessage(expectedMessage);
+    }
+
+    private void registerBook(Map<String, String> bookData) {
         var useCase = new RegisterABookUseCase(bookInMemoryRepository);
         var command = RegisterABookCommand.builder()
                 .isbn(bookData.get("isbn"))
@@ -63,11 +68,6 @@ public class BookStepDefinitions {
                 .build();
 
         useCase.execute(command, new RegisterABookPresenterForTest());
-    }
-
-    @Then("the book registration result should be an error indicating {}")
-    public void theBookRegistrationResultShouldBeAnErrorIndicatingABookWithSameISBNIsAlreadyRegistered(String expectedMessage) {
-        assertThat(thrownException).hasMessage(expectedMessage);
     }
 
     @Getter

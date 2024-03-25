@@ -7,7 +7,6 @@ import com.example.demo.core.domain.member.BorrowingId;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.usecases.BorrowABookUseCase;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -31,7 +30,6 @@ public class BorrowingStepDefinitions {
     public BorrowingStepDefinitions(World world) {
         this.world = world;
     }
-
 
     @Given("next generated borrowing ids will be:")
     public void nextGeneratedBorrowingIdsWillBe(List<String> uuids) {
@@ -64,7 +62,7 @@ public class BorrowingStepDefinitions {
         isbns.forEach(isbn -> borrowABook(memberId, isbn));
     }
 
-    @Then("the borrowing result should be an error indicating {}")
+    @Then("the borrowing should fail because {}")
     public void theBorrowingResultShouldBeAnErrorIndicatingTheMemberAsReachedTheMaximumAmountOfBorrowedBooks(String expectedMessage) {
         assertThat(thrownException).hasMessage(expectedMessage);
     }
@@ -77,8 +75,10 @@ public class BorrowingStepDefinitions {
     @Given("member with id {} has already borrowed following books at {} with ISBN:")
     public void memberWithIdCAcaCCDdAHasAlreadyBorrowedFollowingBooksAtWithISBN(String memberId, String borrowingDateAsString, List<String> isbns) {
         var borrowingDate = LocalDate.parse(borrowingDateAsString, DateTimeFormatter.ISO_DATE);
-        Mockito.when(world.timeService.getCurrentDate()).thenReturn(borrowingDate, world.currentDate);
+        Mockito.when(world.timeService.getCurrentDate()).thenReturn(borrowingDate);
+
         isbns.forEach(isbn -> this.borrowABook(memberId, isbn));
+        Mockito.when(world.timeService.getCurrentDate()).thenReturn(world.currentDate);
     }
 
     @Getter
