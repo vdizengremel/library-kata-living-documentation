@@ -65,7 +65,7 @@ public class MemberStepDefinitions {
         assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }
 
-    @Then("the member registration result should be an error indicating {}")
+    @Then("the member registration should fail because {}")
     public void theResultShouldBeAnErrorIndicatingAMemberWithSameEmailExists(String expectingMessage) {
         assertThat(thrownException).hasMessage(expectingMessage);
     }

@@ -33,4 +33,4 @@ Feature: Register a book
       | isbn       | title                                    | author         |
       | 0747532745 | Harry Potter and the Philosopher's Stone | Rowling, J. K. |
 
-    And the book registration result should be an error indicating a book with same ISBN is already registered
+    And the book registration should fail because a book with same ISBN is already registered

@@ -54,7 +54,7 @@ public class BookStepDefinitions {
         assertThat(optionalBook.get()).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
-    @Then("the book registration result should be an error indicating {}")
+    @Then("the book registration should fail because {}")
     public void theBookRegistrationResultShouldBeAnErrorIndicatingABookWithSameISBNIsAlreadyRegistered(String expectedMessage) {
         assertThat(thrownException).hasMessage(expectedMessage);
     }
