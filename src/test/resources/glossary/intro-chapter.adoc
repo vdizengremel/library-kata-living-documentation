@@ -1,0 +1,6 @@
+= *This is a sample introduction chapter made by VIDI*
+
+Introduction chapter is the place where you can insert custom content for your living documentation.
+
+=== Sub section
+Introduction chapter can have subsections

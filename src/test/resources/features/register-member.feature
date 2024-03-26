@@ -1,3 +1,4 @@
+@section-Member
 Feature: Register a member
   In order to be a library member and be allowed to borrow books
   As a person

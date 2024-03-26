@@ -1,3 +1,4 @@
+@section-Book
 Feature: Register a book
   In order to be an attractive library
   As a librarian

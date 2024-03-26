@@ -1,3 +1,4 @@
+@section-Book
 Feature: Borrow a book
   In order to read a book anywhere
   As a registered member
