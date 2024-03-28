@@ -111,21 +111,44 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.codehaus.mojo</groupId>-->
+<!--				<artifactId>exec-maven-plugin</artifactId>-->
+<!--				<version>3.2.0</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>generate-file</id>-->
+<!--						<phase>process-test-classes</phase>-->
+<!--						<goals>-->
+<!--							<goal>java</goal>-->
+<!--						</goals>-->
+<!--						<configuration>-->
+<!--							<mainClass>com.example.GlossaryGenerator</mainClass>-->
+<!--							&lt;!&ndash; Autres configurations selon votre besoin &ndash;&gt;-->
+<!--						</configuration>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.2.0</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<doclet>com.example.GlossaryDoclet</doclet>
+					<docletArtifact>
+						<groupId>com.example</groupId>
+						<artifactId>demo</artifactId>
+						<version>0.0.1-SNAPSHOT</version>
+					</docletArtifact>
+					<reportOutputDirectory>${project.build.directory}</reportOutputDirectory>
+					<destDir>.</destDir>
+				</configuration>
 				<executions>
 					<execution>
-						<id>generate-file</id>
-						<phase>process-test-classes</phase>
+						<id>build-glossary</id>
 						<goals>
-							<goal>java</goal>
+							<goal>javadoc</goal>
 						</goals>
-						<configuration>
-							<mainClass>com.example.GlossaryGenerator</mainClass>
-							<!-- Autres configurations selon votre besoin -->
-						</configuration>
+						<phase>prepare-package</phase>
 					</execution>
 				</executions>
 			</plugin>

@@ -1,15 +1,15 @@
 package com.example;
 
+import com.example.living.documentation.Glossary;
+import com.example.living.documentation.GlossaryItem;
+import com.example.living.documentation.GlossaryPrinter;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,74 +58,78 @@ public class GlossaryGenerator {
 
     public static void main(String[] args) {
         try (PrintWriter writer = new PrintWriter("target/glossary.json")) {
-            String result = process();
-            writer.println(JSON_TO_GENERATE_GLOSSARY.replace("$GLOSSARY_TEXT", result));
+            Glossary glossary = process();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
+            glossaryPrinter.printGlossary(glossary);
+
+            writer.println(JSON_TO_GENERATE_GLOSSARY.replace("$GLOSSARY_TEXT", stringBuilder.toString()));
 
         } catch (FileNotFoundException e) {
             System.out.println("ERROR : " + e);
         }
     }
 
-    private static String process() {
-        String glossary = "";
-        final Collection<JavaClass> classes = listClasses();
-        for (JavaClass clss : classes) {
-            if (isBusinessMeaningful(clss)) {
-                String item = processClass(clss);
-                glossary = glossary + item + "\\n";
-            }
+    private static Glossary process() {
+        Glossary glossary = new Glossary();
 
-        }
+        listClasses().stream()
+                .filter(GlossaryGenerator::isBusinessMeaningful)
+                .map(GlossaryGenerator::processClass)
+                .forEach(glossary::addItem);
 
         return glossary;
     }
 
-    private static String processClass(JavaClass clss) {
-        String methodAsString = clss.getSimpleName() + ":: " + sanitiseComment(clss.getComment()) + "\\n\\n";
-        System.out.println(clss.getSource().getImports());
-
+    private static GlossaryItem processClass(JavaClass clss) {
+        Map<String, String> informationByName = new HashMap<>();
+        Map<String, String> operationByName = new HashMap<>();
 
         if (clss.isEnum()) {
-            methodAsString += "Values:\\n";
+            informationByName = javaFieldsToMap(clss.getEnumConstants());
             for (JavaField field : clss.getEnumConstants()) {
-                methodAsString += "- " + field.getName() + "\\n";
+                informationByName.put(field.getName(), "");
             }
 
-            methodAsString += "\\n\\n";
-            methodAsString += printMethods(clss);
+            operationByName = printMethods(clss);
         } else if (clss.isInterface()) {
 //            printMethods(clss, writer);
 //            for (ClassDoc subClass : clss.getS(clss)) {
 //                printSubClass(subClass);
 //            }
         } else {
-            methodAsString += ("Information:\\n");
-            for (JavaField field : clss.getFields()) {
-                methodAsString += "- " + field.getName() + getCommentText(field) + "\\n";
-            }
-
-            methodAsString += "\\n\\n";
-            methodAsString += printMethods(clss);
+            informationByName = javaFieldsToMap(clss.getFields());
+            operationByName = printMethods(clss);
         }
 
-        return methodAsString;
+        return new GlossaryItem(clss.getSimpleName(), sanitiseComment(clss.getComment()), informationByName, operationByName);
     }
 
-    private static String printMethods(JavaClass clss) {
+    private static Map<String, String> javaFieldsToMap(List<JavaField> javaFields) {
+        Map<String, String> information = new HashMap<>();
+
+        javaFields.forEach(javaField -> {
+            information.put(javaField.getName(), getCommentText(javaField));
+        });
+
+        return information;
+    }
+
+    private static Map<String, String> printMethods(JavaClass clss) {
         List<JavaMethod> methods = clss.getMethods(false);
         var methodsToDisplay = methods.stream().filter(method -> method.isPublic() && hasComment(method)).toList();
 
         if (methodsToDisplay.isEmpty()) {
-            return "";
+            return Collections.emptyMap();
         }
 
-        String result = "Operations:\\n";
-
+        Map<String, String> operations = new HashMap<>();
         for (JavaMethod method : methodsToDisplay) {
-            result += printMethod(method) + "\\n";
+            operations.put(method.getName(), getCommentText(method));
         }
 
-        return result;
+        return operations;
     }
 
     private static String printMethod(JavaMethod method) {
@@ -147,7 +151,7 @@ public class GlossaryGenerator {
     }
 
     private static String getCommentText(JavaAnnotatedElement element) {
-        return Optional.ofNullable(element.getComment()).map(GlossaryGenerator::sanitiseComment).map(comment -> ": " + comment).orElse("");
+        return Optional.ofNullable(element.getComment()).map(GlossaryGenerator::sanitiseComment).orElse("");
     }
 
 
