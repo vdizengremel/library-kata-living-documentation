@@ -1,11 +1,14 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
+import com.example.living.documentation.glossary.Glossary;
+import com.example.living.documentation.glossary.GlossaryItem;
+import com.example.living.documentation.glossary.GlossaryPrinter;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Map;
 
-import static com.example.living.documentation.GlossaryPrinter.NEW_LINE;
+import static com.example.living.documentation.glossary.GlossaryPrinter.NEW_LINE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class GlossaryPrinterTest {

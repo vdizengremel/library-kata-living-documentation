@@ -1,6 +1,6 @@
 package com.example.demo.infrastructure.borrowing;
 
-import com.example.annotation.Adapter;
+import com.example.living.documentation.annotation.Adapter;
 import com.example.demo.core.domain.member.Borrowing;
 import com.example.demo.core.domain.member.BorrowingId;
 import com.example.demo.core.domain.member.BorrowingRepository;

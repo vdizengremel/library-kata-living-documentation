@@ -1,6 +1,6 @@
 package com.example.demo.core.usecases;
 
-import com.example.annotation.UseCase;
+import com.example.living.documentation.annotation.UseCase;
 import com.example.demo.core.domain.SuccessOrError;
 import com.example.demo.core.domain.TimeService;
 import com.example.demo.core.domain.book.Book;

@@ -1,4 +1,4 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
 import java.util.ArrayList;
 import java.util.List;

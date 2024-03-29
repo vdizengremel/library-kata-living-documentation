@@ -1,6 +1,6 @@
 package com.example.demo.core.usecases;
 
-import com.example.annotation.UseCase;
+import com.example.living.documentation.annotation.UseCase;
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.BookRepository;
 import com.example.demo.core.domain.book.ISBN;

@@ -1,6 +1,4 @@
-package com.example.living.documentation.glossarytestclasses;
-
-import com.example.annotation.CoreConcept;
+package com.example.living.documentation.glossary.glossarytestclasses;
 
 /**
  * This is not an important concept. It will not be in glossary.

@@ -1,6 +1,6 @@
 package com.example.demo.infrastructure.member;
 
-import com.example.annotation.Adapter;
+import com.example.living.documentation.annotation.Adapter;
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberRepository;

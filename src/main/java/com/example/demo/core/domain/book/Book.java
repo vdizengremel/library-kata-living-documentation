@@ -1,6 +1,6 @@
 package com.example.demo.core.domain.book;
 
-import com.example.annotation.CoreConcept;
+import com.example.living.documentation.annotation.CoreConcept;
 import lombok.Getter;
 
 /**

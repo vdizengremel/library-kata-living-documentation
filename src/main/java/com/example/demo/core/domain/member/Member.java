@@ -1,6 +1,6 @@
 package com.example.demo.core.domain.member;
 
-import com.example.annotation.CoreConcept;
+import com.example.living.documentation.annotation.CoreConcept;
 import com.example.demo.core.domain.SuccessOrError;
 import com.example.demo.core.domain.book.Book;
 import lombok.Getter;

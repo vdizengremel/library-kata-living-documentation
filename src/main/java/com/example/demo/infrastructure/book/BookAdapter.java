@@ -1,6 +1,6 @@
 package com.example.demo.infrastructure.book;
 
-import com.example.annotation.Adapter;
+import com.example.living.documentation.annotation.Adapter;
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.BookRepository;
 import com.example.demo.core.domain.book.ISBN;

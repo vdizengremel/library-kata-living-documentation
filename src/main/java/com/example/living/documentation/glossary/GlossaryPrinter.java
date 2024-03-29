@@ -1,4 +1,4 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
 public class GlossaryPrinter {
     protected static final String NEW_LINE = "\\n";

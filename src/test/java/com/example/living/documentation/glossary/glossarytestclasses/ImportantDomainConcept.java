@@ -1,6 +1,6 @@
-package com.example.living.documentation.glossarytestclasses;
+package com.example.living.documentation.glossary.glossarytestclasses;
 
-import com.example.annotation.CoreConcept;
+import com.example.living.documentation.annotation.CoreConcept;
 
 /**
  * This is a concept to add to glossary.

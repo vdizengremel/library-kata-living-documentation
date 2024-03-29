@@ -1,4 +1,4 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

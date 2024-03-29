@@ -1,5 +1,8 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
+import com.example.living.documentation.glossary.Glossary;
+import com.example.living.documentation.glossary.GlossaryDoclet;
+import com.example.living.documentation.glossary.GlossaryItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +49,7 @@ class GlossaryDocletTest {
 
         @Override
         protected String getPackageName() {
-            return "com.example.living.documentation.glossarytestclasses";
+            return "com.example.living.documentation.glossary.glossarytestclasses";
         }
 
         @Override

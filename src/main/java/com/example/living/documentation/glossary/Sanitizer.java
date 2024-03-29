@@ -1,4 +1,4 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

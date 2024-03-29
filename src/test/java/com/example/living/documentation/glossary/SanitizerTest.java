@@ -1,5 +1,6 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
+import com.example.living.documentation.glossary.Sanitizer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

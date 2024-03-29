@@ -1,9 +1,6 @@
-package com.example.living.documentation;
+package com.example.living.documentation.glossary;
 
-import com.example.annotation.CoreConcept;
-import com.example.living.documentation.Glossary;
-import com.example.living.documentation.GlossaryItem;
-import com.example.living.documentation.GlossaryPrinter;
+import com.example.living.documentation.annotation.CoreConcept;
 import jdk.javadoc.doclet.Doclet;
 import jdk.javadoc.doclet.DocletEnvironment;
 import jdk.javadoc.doclet.Reporter;
