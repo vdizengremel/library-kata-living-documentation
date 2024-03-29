@@ -57,6 +57,17 @@ public class BorrowingStepDefinitions {
         LocalDate returnDate = Optional.ofNullable(borrowingData.get("return date")).map(data -> LocalDate.parse(data, DateTimeFormatter.ISO_DATE)).orElse(null);
         Borrowing expectedBorrowing = new Borrowing(borrowingId, MemberId.from(borrowingData.get("member id")), new ISBN(borrowingData.get("isbn")), LocalDate.parse(borrowingData.get("start date"), DateTimeFormatter.ISO_DATE), LocalDate.parse(borrowingData.get("max authorized return date"), DateTimeFormatter.ISO_DATE), returnDate);
         assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(expectedBorrowing);
+        assertThat(optionalBorrowing.get()).usingRecursiveComparison().comparingOnlyFields("expectedReturnDate").isEqualTo(expectedBorrowing);
+    }
+
+    @Then("borrowing with id {} should have return date {}")
+    public void borrowingShouldBeSavedWith(String borrowingIdAsString, String returnDateAsString) {
+        var borrowingId = BorrowingId.fromString(borrowingIdAsString);
+
+        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(borrowingId);
+        assertThat(optionalBorrowing).isPresent();
+        LocalDate expectedReturnDate = LocalDate.parse(returnDateAsString, DateTimeFormatter.ISO_DATE);
+        assertThat(optionalBorrowing.get()).extracting("returnDate").isEqualTo(expectedReturnDate);
     }
 
     @Given("member with id {} has already borrowed following books with ISBN:")
@@ -84,8 +95,8 @@ public class BorrowingStepDefinitions {
     }
 //
 //    @Then("borrowing with id {} should have return date {}")
-//    public void borrowingWithIdEECEbAdfEACShouldHaveReturnDate(String borrowingId, String returnDate) {
-//        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(BorrowingId.fromString(borrowingId));
+//    public void borrowingWithIdEECEbAdfEACShouldHaveReturnDate(String borrowingIdAsString, String expectedReturnDate) {
+//        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(BorrowingId.fromString(borrowingIdAsString));
 //        assertThat(optionalBorrowing).isPresent();
 //        assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing());
 //    }

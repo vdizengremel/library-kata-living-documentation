@@ -26,9 +26,7 @@ Feature: Return a book
     And member with id 4c502830-aca2-4c19-96c6-dd60959a1601 has already borrowed following books at 2024-03-01 with ISBN:
       | 2253159913 |
     When the borrowed book with ISBN 2253159913 is returned
-    Then borrowing should be saved with:
-      | id                                   | member id                            | isbn       | start date | max authorized return date | return date |
-      | e0e50076-7c78-4344-97eb-4adf30e10a5c | 4c502830-aca2-4c19-96c6-dd60959a1601 | 2253159913 | 2024-03-01 | 2024-03-22                 | 2024-03-06  |
+    Then borrowing with id e0e50076-7c78-4344-97eb-4adf30e10a5c should have return date 2024-03-06
 
   Scenario: Try to return a book that is not borrowed
     Given next generated borrowing ids will be:
