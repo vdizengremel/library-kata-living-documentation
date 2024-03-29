@@ -1,8 +1,8 @@
 package com.example.demo.core.usecases;
 
+import com.example.demo.core.domain.book.ISBN;
 import com.example.living.documentation.annotation.UseCase;
 import com.example.demo.core.domain.TimeService;
-import com.example.demo.core.domain.member.BorrowingId;
 import com.example.demo.core.domain.member.BorrowingRepository;
 
 @UseCase
@@ -16,7 +16,7 @@ public class ReturnABookUseCase {
     }
 
     public <T> T execute(ReturnABookCommand command, ReturnABookPresenter<T> presenter) {
-        var optionalBorrowing = borrowingRepository.findById(BorrowingId.fromString(command.borrowingId()));
+        var optionalBorrowing = borrowingRepository.findForIsbn(new ISBN(command.getIsbn()));
 
         if(optionalBorrowing.isEmpty()) {
             return presenter.presentBorrowingDoesNotExist();
@@ -33,7 +33,7 @@ public class ReturnABookUseCase {
     }
 
     public interface ReturnABookCommand {
-        String borrowingId();
+        String getIsbn();
     }
 
     public interface ReturnABookPresenter<T> {

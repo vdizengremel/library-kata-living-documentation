@@ -6,6 +6,7 @@ import com.example.demo.core.domain.member.BorrowingError;
 import com.example.demo.core.domain.member.BorrowingId;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.usecases.BorrowABookUseCase;
+import com.example.demo.core.usecases.ReturnABookUseCase;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -53,7 +54,8 @@ public class BorrowingStepDefinitions {
 
         Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(borrowingId);
         assertThat(optionalBorrowing).isPresent();
-        Borrowing expectedBorrowing = new Borrowing(borrowingId, MemberId.from(borrowingData.get("member id")), new ISBN(borrowingData.get("isbn")), LocalDate.parse(borrowingData.get("start date"), DateTimeFormatter.ISO_DATE), LocalDate.parse(borrowingData.get("max authorized return date"), DateTimeFormatter.ISO_DATE), null);
+        LocalDate returnDate = Optional.ofNullable(borrowingData.get("return date")).map(data -> LocalDate.parse(data, DateTimeFormatter.ISO_DATE)).orElse(null);
+        Borrowing expectedBorrowing = new Borrowing(borrowingId, MemberId.from(borrowingData.get("member id")), new ISBN(borrowingData.get("isbn")), LocalDate.parse(borrowingData.get("start date"), DateTimeFormatter.ISO_DATE), LocalDate.parse(borrowingData.get("max authorized return date"), DateTimeFormatter.ISO_DATE), returnDate);
         assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(expectedBorrowing);
     }
 
@@ -79,6 +81,29 @@ public class BorrowingStepDefinitions {
 
         isbns.forEach(isbn -> this.borrowABook(memberId, isbn));
         Mockito.when(world.timeService.getCurrentDate()).thenReturn(world.currentDate);
+    }
+//
+//    @Then("borrowing with id {} should have return date {}")
+//    public void borrowingWithIdEECEbAdfEACShouldHaveReturnDate(String borrowingId, String returnDate) {
+//        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(BorrowingId.fromString(borrowingId));
+//        assertThat(optionalBorrowing).isPresent();
+//        assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing());
+//    }
+
+    @When("the borrowed book with ISBN {} is returned")
+    public void theBorrowedBookWithISBNIsReturned(String isbn) {
+        ReturnABookUseCase returnABookUseCase = new ReturnABookUseCase(borrowingInMemoryRepository, world.timeService);
+
+        try {
+            returnABookUseCase.execute(() -> isbn, new ReturnABookPresenterForTest());
+        } catch (PresenterException presenterException) {
+            thrownException = presenterException;
+        }
+    }
+
+    @Then("returning the book should fail because {}")
+    public void returningTheBookShouldFailBecauseNoBorrowingExistsForThisBook(String expectedMessage) {
+        assertThat(thrownException).hasMessage(expectedMessage);
     }
 
     @Getter
@@ -107,13 +132,26 @@ public class BorrowingStepDefinitions {
 
         @Override
         public String presentCannotBorrowedBook(BorrowingError borrowingError) {
-           String errorCause = switch (borrowingError) {
-               case MEMBER_IS_BANNED -> null;
-               case HAS_LATE_BORROWING -> "member has not returned a book in time";
-               case HAS_REACHED_MAX_AUTHORIZED_BORROWING -> "member has reached the maximum amount of borrowed books";
-           };
+            String errorCause = switch (borrowingError) {
+                case MEMBER_IS_BANNED -> null;
+                case HAS_LATE_BORROWING -> "member has not returned a book in time";
+                case HAS_REACHED_MAX_AUTHORIZED_BORROWING -> "member has reached the maximum amount of borrowed books";
+            };
 
             throw new PresenterException(errorCause);
+        }
+    }
+
+    static class ReturnABookPresenterForTest implements ReturnABookUseCase.ReturnABookPresenter<Void> {
+
+        @Override
+        public Void presentBookReturned() {
+            return null;
+        }
+
+        @Override
+        public Void presentBorrowingDoesNotExist() {
+            throw new PresenterException("no borrowing exists for this book");
         }
     }
 }

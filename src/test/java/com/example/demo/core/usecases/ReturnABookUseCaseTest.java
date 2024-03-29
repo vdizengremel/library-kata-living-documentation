@@ -38,7 +38,7 @@ class ReturnABookUseCaseTest {
         BorrowingId borrowingId = borrowingRepository.generateNewId();
         borrowingRepository.add(new Borrowing(borrowingId, memberId, new ISBN("123"), LocalDate.of(2024, 3, 11), LocalDate.MAX, null));
 
-        String result = returnABookUseCase.execute(borrowingId::toStringValue, new PresenterForTest());
+        String result = returnABookUseCase.execute(() -> "123", new PresenterForTest());
         assertThat(result).isEqualTo("success");
     }
 
@@ -53,7 +53,7 @@ class ReturnABookUseCaseTest {
         LocalDate currentDate = LocalDate.of(2024, 3, 11);
         when(timeService.getCurrentDate()).thenReturn(currentDate);
 
-        returnABookUseCase.execute(borrowingId::toStringValue, new PresenterForTest());
+        returnABookUseCase.execute(() -> "123", new PresenterForTest());
 
         var updatedBorrowing = borrowingRepository.findById(borrowingId);
         assertThat(updatedBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing(borrowingId, memberId, new ISBN("123"), LocalDate.of(2024, 3, 6), LocalDate.MAX, currentDate));

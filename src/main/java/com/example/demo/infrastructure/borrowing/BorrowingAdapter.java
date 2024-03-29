@@ -1,5 +1,6 @@
 package com.example.demo.infrastructure.borrowing;
 
+import com.example.demo.core.domain.book.ISBN;
 import com.example.living.documentation.annotation.Adapter;
 import com.example.demo.core.domain.member.Borrowing;
 import com.example.demo.core.domain.member.BorrowingId;
@@ -35,5 +36,10 @@ public class BorrowingAdapter implements BorrowingRepository {
     @Override
     public List<Borrowing> findInProgressByMemberId(MemberId memberId) {
         return null;
+    }
+
+    @Override
+    public Optional<Borrowing> findForIsbn(ISBN isbn) {
+        return Optional.empty();
     }
 }

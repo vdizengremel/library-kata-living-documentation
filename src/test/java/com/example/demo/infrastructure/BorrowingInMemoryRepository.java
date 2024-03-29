@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -54,6 +55,13 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
         return streamData()
                 .filter(borrowing -> borrowing.isMadeBy(memberId))
                 .filter(Borrowing::isInProgress).toList();
+    }
+
+    @Override
+    public Optional<Borrowing> findForIsbn(ISBN isbn) {
+        return streamData()
+                .filter(borrowing -> borrowing.isbn().equals(isbn))
+                .findFirst();
     }
 
     protected Borrowing copy(Borrowing borrowing) {
