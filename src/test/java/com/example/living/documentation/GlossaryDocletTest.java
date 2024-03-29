@@ -26,17 +26,6 @@ class GlossaryDocletTest {
                 "./src/test/java",
                 "-subpackages",
                 "com.example.demo",
-//                "com.example.annotation",
-                "-d",
-                "com.example",
-                "-author",
-                "com.example",
-                "-doctitle",
-                "whatever not used just to show compatibility",
-                "-windowtitle",
-                "whatever not used just to show compatibility",
-//                "-classdir",
-//                BUILD_PROPERTY_FILE_LOCATION
         };
         DocumentationTool.DocumentationTask task = systemDocumentationTool.getTask(null, null, null,
                 DocletForTest.class, Arrays.asList(args), null);
