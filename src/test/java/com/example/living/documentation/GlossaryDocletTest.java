@@ -41,7 +41,7 @@ class GlossaryDocletTest {
         assertThat(DocletForTest.glossary.items()).containsExactlyInAnyOrder(classItem, enumItem, itemWithLink);
     }
 
-   public static class DocletForTest extends GlossaryDoclet {
+    public static class DocletForTest extends GlossaryDoclet {
         public static Glossary glossary;
 
         @Override
