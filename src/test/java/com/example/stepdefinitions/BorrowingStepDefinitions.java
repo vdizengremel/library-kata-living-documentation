@@ -93,13 +93,6 @@ public class BorrowingStepDefinitions {
         isbns.forEach(isbn -> this.borrowABook(memberId, isbn));
         Mockito.when(world.timeService.getCurrentDate()).thenReturn(world.currentDate);
     }
-//
-//    @Then("borrowing with id {} should have return date {}")
-//    public void borrowingWithIdEECEbAdfEACShouldHaveReturnDate(String borrowingIdAsString, String expectedReturnDate) {
-//        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(BorrowingId.fromString(borrowingIdAsString));
-//        assertThat(optionalBorrowing).isPresent();
-//        assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(new Borrowing());
-//    }
 
     @When("the borrowed book with ISBN {} is returned")
     public void theBorrowedBookWithISBNIsReturned(String isbn) {
