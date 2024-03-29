@@ -1,4 +1,4 @@
-package com.example;
+package com.example.living.documentation;
 
 import com.example.annotation.CoreConcept;
 import com.example.living.documentation.Glossary;
@@ -138,7 +138,7 @@ public class GlossaryDoclet extends StandardDoclet implements Doclet {
         return glossary;
     }
 
-    private boolean print(Glossary glossary) {
+    protected boolean print(Glossary glossary) {
         StringBuilder stringBuilder = new StringBuilder();
         GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
         glossaryPrinter.printGlossary(glossary);
@@ -163,7 +163,7 @@ public class GlossaryDoclet extends StandardDoclet implements Doclet {
             // Séparer la documentation en lignes
             String[] lines = docComment.split("\\r?\\n");
             // Récupérer la première ligne (la description)
-            return lines[0].replace("\"", "\\\"");
+            return lines[0].replace("\"", "\\\"").trim();
         }
 
         return "";

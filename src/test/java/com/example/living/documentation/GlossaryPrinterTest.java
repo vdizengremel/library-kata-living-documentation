@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GlossaryPrinterTest {
 
     @Test
-    void shouldPrintGlossaryWithACompleteConcept(){
+    void shouldPrintGlossaryWithACompleteConcept() {
         StringBuilder stringBuilder = new StringBuilder();
         GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
 
@@ -44,7 +44,7 @@ class GlossaryPrinterTest {
     }
 
     @Test
-    void shouldNotContainInformationWhenNone(){
+    void shouldNotContainInformationWhenNone() {
         StringBuilder stringBuilder = new StringBuilder();
         GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
 
@@ -70,7 +70,7 @@ class GlossaryPrinterTest {
     }
 
     @Test
-    void shouldNotContainOperationsWhenNone(){
+    void shouldNotContainOperationsWhenNone() {
         StringBuilder stringBuilder = new StringBuilder();
         GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
 
@@ -96,7 +96,7 @@ class GlossaryPrinterTest {
     }
 
     @Test
-    void shouldPrintInformationAndOperationCorrectlyWhenNoDefinition(){
+    void shouldPrintInformationAndOperationCorrectlyWhenNoDefinition() {
         StringBuilder stringBuilder = new StringBuilder();
         GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
 
@@ -125,7 +125,7 @@ class GlossaryPrinterTest {
     }
 
     @Test
-    void shouldPrintItemsInAlphabeticalOrder(){
+    void shouldPrintItemsInAlphabeticalOrder() {
         StringBuilder stringBuilder = new StringBuilder();
         GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
 
@@ -140,5 +140,21 @@ class GlossaryPrinterTest {
 
         String actual = stringBuilder.toString();
         assertThat(actual.indexOf("Book::")).isLessThan(actual.indexOf("Member::"));
+    }
+
+    @Test
+    void shouldPrintHtmlLinkAsAsciiDocLink() {
+        StringBuilder stringBuilder = new StringBuilder();
+        GlossaryPrinter glossaryPrinter = new GlossaryPrinter(stringBuilder);
+
+        GlossaryItem itemWithLink = new GlossaryItem("ImportantConceptWithLink", "Concept with a <a href=\\\"https://wiki.com\\\">link</a>.", Collections.emptyMap(), Collections.emptyMap());
+
+        Glossary glossary = new Glossary();
+        glossary.addItem(itemWithLink);
+
+        glossaryPrinter.printGlossary(glossary);
+
+        String actual = stringBuilder.toString();
+        assertThat(actual).isEqualTo("ImportantConceptWithLink:: Concept with a https://wiki.com[link,window=_blank]." + NEW_LINE + NEW_LINE);
     }
 }

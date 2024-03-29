@@ -16,7 +16,7 @@ public class GlossaryPrinter {
     private void printItem(GlossaryItem glossaryItem) {
         stringBuilder.append(glossaryItem.name());
         stringBuilder.append(":: ");
-        stringBuilder.append(glossaryItem.definition());
+        stringBuilder.append(Sanitizer.sanitizeComment(glossaryItem.definition()));
         System.out.println(glossaryItem.name() + " " + glossaryItem.definition());
 
         printNewLine();
@@ -45,7 +45,7 @@ public class GlossaryPrinter {
 
         if (!value.isBlank()) {
             stringBuilder.append(": ");
-            stringBuilder.append(value);
+            stringBuilder.append(Sanitizer.sanitizeComment(value));
         }
 
         printNewLine();
