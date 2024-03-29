@@ -27,6 +27,7 @@ class GlossaryDocletTest {
                 "-subpackages",
                 "com.example.demo",
         };
+
         DocumentationTool.DocumentationTask task = systemDocumentationTool.getTask(null, null, null,
                 DocletForTest.class, Arrays.asList(args), null);
 
