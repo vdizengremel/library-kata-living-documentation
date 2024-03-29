@@ -25,8 +25,10 @@ Feature: Return a book
       | 9780425054710 | Dune                                     | Herbert, Frank       |
     And member with id 4c502830-aca2-4c19-96c6-dd60959a1601 has already borrowed following books at 2024-03-01 with ISBN:
       | 2253159913 |
+      | 0553897845 |
     When the borrowed book with ISBN 2253159913 is returned
     Then borrowing with id e0e50076-7c78-4344-97eb-4adf30e10a5c should have return date 2024-03-06
+    And borrowing with id 75c5f95e-efb6-4465-b12a-afd1c3ed8908 should have return date null
 
   Scenario: Try to return a book that is not borrowed
     Given next generated borrowing ids will be:

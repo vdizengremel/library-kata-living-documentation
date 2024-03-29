@@ -13,5 +13,5 @@ public interface BorrowingRepository {
     void update(Borrowing borrowing);
 
     List<Borrowing> findInProgressByMemberId(MemberId memberId);
-    Optional<Borrowing> findForIsbn(ISBN isbn);
+    Optional<Borrowing> findInProgressForIsbn(ISBN isbn);
 }

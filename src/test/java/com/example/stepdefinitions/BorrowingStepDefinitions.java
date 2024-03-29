@@ -66,7 +66,11 @@ public class BorrowingStepDefinitions {
 
         Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(borrowingId);
         assertThat(optionalBorrowing).isPresent();
-        LocalDate expectedReturnDate = LocalDate.parse(returnDateAsString, DateTimeFormatter.ISO_DATE);
+
+        LocalDate expectedReturnDate = Optional.ofNullable(returnDateAsString)
+                .filter(value -> !value.equals("null"))
+                .map(value -> LocalDate.parse(value, DateTimeFormatter.ISO_DATE)).orElse(null);
+
         assertThat(optionalBorrowing.get()).extracting("returnDate").isEqualTo(expectedReturnDate);
     }
 

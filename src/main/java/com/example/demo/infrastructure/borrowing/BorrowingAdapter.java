@@ -39,7 +39,7 @@ public class BorrowingAdapter implements BorrowingRepository {
     }
 
     @Override
-    public Optional<Borrowing> findForIsbn(ISBN isbn) {
+    public Optional<Borrowing> findInProgressForIsbn(ISBN isbn) {
         return Optional.empty();
     }
 }

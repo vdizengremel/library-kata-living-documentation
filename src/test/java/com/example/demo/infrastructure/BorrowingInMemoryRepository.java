@@ -58,9 +58,10 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
     }
 
     @Override
-    public Optional<Borrowing> findForIsbn(ISBN isbn) {
+    public Optional<Borrowing> findInProgressForIsbn(ISBN isbn) {
         return streamData()
                 .filter(borrowing -> borrowing.isbn().equals(isbn))
+                .filter(Borrowing::isInProgress)
                 .findFirst();
     }
 

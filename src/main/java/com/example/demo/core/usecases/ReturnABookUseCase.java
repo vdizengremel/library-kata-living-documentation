@@ -16,7 +16,7 @@ public class ReturnABookUseCase {
     }
 
     public <T> T execute(ReturnABookCommand command, ReturnABookPresenter<T> presenter) {
-        var optionalBorrowing = borrowingRepository.findForIsbn(new ISBN(command.getIsbn()));
+        var optionalBorrowing = borrowingRepository.findInProgressForIsbn(new ISBN(command.getIsbn()));
 
         if(optionalBorrowing.isEmpty()) {
             return presenter.presentBorrowingDoesNotExist();
