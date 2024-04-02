@@ -6,17 +6,9 @@ Feature: Borrow a book
 
   Background:
     Given current time is 2024-03-06
-    And next generated member ids will be:
-      | 4c502830-aca2-4c19-96c6-dd60959a1601 |
     And already registered members:
-      | firstname | lastname | email                  |
-      | Julien    | Durant   | julien.durant@smth.com |
-    And next generated borrowing ids will be:
-      | e0e50076-7c78-4344-97eb-4adf30e10a5c |
-      | 75c5f95e-efb6-4465-b12a-afd1c3ed8908 |
-      | 75daf232-d971-4589-94e9-cf4f6df7edea |
-      | be7c303e-7986-4e89-a699-2199b248c23f |
-      | 2107d428-ed1a-4d97-9ee2-7b223e671f63 |
+      | id                                   | firstname | lastname | email                  |
+      | 4c502830-aca2-4c19-96c6-dd60959a1601 | Julien    | Durant   | julien.durant@smth.com |
     And already registered books:
       | isbn          | title                                    | author               |
       | 2253159913    | Elantris                                 | Sanderson, Brandon   |
@@ -25,6 +17,8 @@ Feature: Borrow a book
       | 9780425054710 | Dune                                     | Herbert, Frank       |
 
   Scenario: Member has no borrowing
+    Given next generated borrowing ids will be:
+      | e0e50076-7c78-4344-97eb-4adf30e10a5c |
     When member with id 4c502830-aca2-4c19-96c6-dd60959a1601 borrow the book with ISBN 2253159913
     Then borrowing should be saved with:
       | id                                   | member id                            | isbn       | start date | max authorized return date |

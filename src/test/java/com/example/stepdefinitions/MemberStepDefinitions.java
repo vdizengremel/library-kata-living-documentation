@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberStepDefinitions {
     private final World world;
-    private MemberInMemoryRepository memberInMemoryRepository;
 
     private PresenterException thrownException;
     private Member lastRegisteredMember;
@@ -32,8 +31,7 @@ public class MemberStepDefinitions {
     @Given("next generated member ids will be:")
     public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
         var memberIds = uuids.stream().map(MemberId::from).toList();
-        memberInMemoryRepository = new MemberInMemoryRepository(memberIds);
-        world.memberInMemoryRepository = memberInMemoryRepository;
+        world.memberInMemoryRepository.setNextGeneratedIds(memberIds);
     }
 
     @Given("already registered members:")
@@ -60,7 +58,7 @@ public class MemberStepDefinitions {
 
         assertThat(lastRegisteredMember).usingRecursiveComparison().isEqualTo(expectedMember);
 
-        Optional<Member> optionalMember = memberInMemoryRepository.findById(lastGeneratedId);
+        Optional<Member> optionalMember = world.memberInMemoryRepository.findById(lastGeneratedId);
         assertThat(optionalMember).isPresent();
         assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }
@@ -77,7 +75,9 @@ public class MemberStepDefinitions {
                 .email(existingMember.get("email"))
                 .build();
 
-        var registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
+        Optional.ofNullable(existingMember.get("id")).map(MemberId::from).ifPresent(world.memberInMemoryRepository::setNextGeneratedId);
+
+        var registerMemberUseCase = new RegisterMemberUseCase(world.memberInMemoryRepository);
         this.lastRegisteredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
     }
 

@@ -1,9 +1,6 @@
 package com.example.demo.infrastructure;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public abstract class AbstractInMemoryRepository<ID, DATA> {
@@ -14,7 +11,7 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
     protected AbstractInMemoryRepository(List<ID> ids) {
         dataById = new HashMap<>();
         idIndex = 0;
-        this.ids = ids;
+        this.ids = new ArrayList<>(ids);
     }
 
     public ID generateNewId() {
@@ -50,7 +47,11 @@ public abstract class AbstractInMemoryRepository<ID, DATA> {
         idIndex = 0;
     }
 
-    public ID getLastGeneratedId() {
-        return ids.get(idIndex - 1);
+    public void setNextGeneratedIds(List<ID> nextGeneratedIds) {
+        ids.addAll(idIndex, nextGeneratedIds);
+    }
+
+    public void setNextGeneratedId(ID nextGeneratedId) {
+        setNextGeneratedIds(List.of(nextGeneratedId));
     }
 }

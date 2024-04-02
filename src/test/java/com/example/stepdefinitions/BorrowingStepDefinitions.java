@@ -30,12 +30,13 @@ public class BorrowingStepDefinitions {
 
     public BorrowingStepDefinitions(World world) {
         this.world = world;
+        borrowingInMemoryRepository = new BorrowingInMemoryRepository();
     }
 
     @Given("next generated borrowing ids will be:")
     public void nextGeneratedBorrowingIdsWillBe(List<String> uuids) {
         var borrowingIds = uuids.stream().map(BorrowingId::fromString).toList();
-        borrowingInMemoryRepository = new BorrowingInMemoryRepository(borrowingIds);
+        borrowingInMemoryRepository.setNextGeneratedIds(borrowingIds);
     }
 
     @When("member with id {} borrow the book with ISBN {}")

@@ -12,6 +12,7 @@ public class World {
 
     public World() {
         timeService = Mockito.mock();
+        memberInMemoryRepository = new MemberInMemoryRepository();
     }
 
     public BookInMemoryRepository bookInMemoryRepository;
