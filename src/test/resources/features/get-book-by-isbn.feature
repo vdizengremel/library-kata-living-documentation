@@ -1,3 +1,4 @@
+@section-Book
 Feature: Get book by ISBN
   In order to get book information
   As a librarian

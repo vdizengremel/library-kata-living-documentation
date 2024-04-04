@@ -5,6 +5,8 @@ import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.usecases.GetBookByIsbnUseCase;
 import com.example.demo.core.usecases.RegisterABookUseCase;
 import com.example.demo.infrastructure.book.BookInMemoryRepository;
+import com.example.test.PresenterException;
+import com.example.test.World;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -14,9 +16,8 @@ import lombok.Getter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import static com.example.test.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookStepDefinitions {
@@ -78,15 +79,6 @@ public class BookStepDefinitions {
     public void theFollowingBookShouldBeReturned(List<Map<String, String>> expected) {
         Map<String, String> bookData = expected.getFirst();
         assertThat(returnedBook).usingRecursiveComparison().isEqualTo(new Book(new ISBN(bookData.get("isbn")), bookData.get("title"), bookData.get("author")));
-    }
-
-    private PresenterException catchPresenterException(Runnable fn) {
-        try {
-            fn.run();
-            return null;
-        } catch (PresenterException presenterException) {
-            return presenterException;
-        }
     }
 
     @Then("the returning of book should fail because {}")

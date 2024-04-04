@@ -1,4 +1,4 @@
-package com.example.stepdefinitions;
+package com.example.test;
 
 import com.example.demo.core.domain.TimeService;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;

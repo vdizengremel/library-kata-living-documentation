@@ -1,5 +1,5 @@
 @section-Member
 #@order-20
 Feature: Member
-  This is a member section.
+  This is the member section.
   Scenario: Root

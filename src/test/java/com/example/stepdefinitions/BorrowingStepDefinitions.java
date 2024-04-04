@@ -8,6 +8,8 @@ import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.usecases.BorrowABookUseCase;
 import com.example.demo.core.usecases.ReturnABookUseCase;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
+import com.example.test.PresenterException;
+import com.example.test.World;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -21,11 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.example.test.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BorrowingStepDefinitions {
     private final World world;
-    private BorrowingInMemoryRepository borrowingInMemoryRepository;
+    private final BorrowingInMemoryRepository borrowingInMemoryRepository;
     private PresenterException thrownException;
 
     public BorrowingStepDefinitions(World world) {
@@ -41,11 +44,7 @@ public class BorrowingStepDefinitions {
 
     @When("member with id {} borrow the book with ISBN {}")
     public void memberWithIdBorrowTheBookWithISBN(String memberId, String isbn) {
-        try {
-            borrowABook(memberId, isbn);
-        } catch (PresenterException e) {
-            thrownException = e;
-        }
+        thrownException = catchPresenterException(() -> borrowABook(memberId, isbn));
     }
 
     @Then("borrowing should be saved with:")
@@ -102,12 +101,7 @@ public class BorrowingStepDefinitions {
     @When("the borrowed book with ISBN {} is returned")
     public void theBorrowedBookWithISBNIsReturned(String isbn) {
         ReturnABookUseCase returnABookUseCase = new ReturnABookUseCase(borrowingInMemoryRepository, world.timeService);
-
-        try {
-            returnABookUseCase.execute(() -> isbn, new ReturnABookPresenterForTest());
-        } catch (PresenterException presenterException) {
-            thrownException = presenterException;
-        }
+        thrownException = catchPresenterException(() -> returnABookUseCase.execute(() -> isbn, new ReturnABookPresenterForTest()));
     }
 
     @Then("returning the book should fail because {}")

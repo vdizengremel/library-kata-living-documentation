@@ -1,4 +1,4 @@
-@section-Book
+@section-Borrowing
 Feature: Borrow a book
   In order to read a book anywhere
   As a registered member
@@ -16,7 +16,9 @@ Feature: Borrow a book
       | 0553897845    | A Song of Ice and Fire                   | Martin, George R. R. |
       | 9780425054710 | Dune                                     | Herbert, Frank       |
 
-  Scenario: Member has no borrowing
+  Scenario: Member without borrowing can borrow book
+    A book is borrowed for 3 weeks.
+
     Given next generated borrowing ids will be:
       | e0e50076-7c78-4344-97eb-4adf30e10a5c |
     When member with id 4c502830-aca2-4c19-96c6-dd60959a1601 borrow the book with ISBN 2253159913

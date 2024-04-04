@@ -1,4 +1,4 @@
-@section-Book
+@section-Borrowing
 Feature: Return a book
   In order to keep borrowing books
   As a member

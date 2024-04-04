@@ -1,4 +1,4 @@
-package com.example.stepdefinitions;
+package com.example.test;
 
 public class PresenterException extends RuntimeException {
     public PresenterException(String message) {

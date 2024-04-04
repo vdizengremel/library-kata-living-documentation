@@ -5,6 +5,8 @@ import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberStatus;
 import com.example.demo.core.usecases.RegisterMemberUseCase;
 import com.example.demo.infrastructure.member.MemberInMemoryRepository;
+import com.example.test.PresenterException;
+import com.example.test.World;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -15,23 +17,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.example.test.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberStepDefinitions {
-    private final World world;
-
+    private final MemberInMemoryRepository memberInMemoryRepository;
     private PresenterException thrownException;
     private Member lastRegisteredMember;
 
     public MemberStepDefinitions(World world){
-        this.world = world;
+        memberInMemoryRepository = world.memberInMemoryRepository;
     }
 
 
     @Given("next generated member ids will be:")
     public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
         var memberIds = uuids.stream().map(MemberId::from).toList();
-        world.memberInMemoryRepository.setNextGeneratedIds(memberIds);
+        memberInMemoryRepository.setNextGeneratedIds(memberIds);
     }
 
     @Given("already registered members:")
@@ -42,12 +44,7 @@ public class MemberStepDefinitions {
     @When("a person registers with information:")
     public void aPersonRegistersWithInformation(List<Map<String, String>> personInformation) {
         var person = personInformation.getFirst();
-
-        try {
-           registerMember(person);
-        } catch (PresenterException presenterException) {
-            thrownException = presenterException;
-        }
+        thrownException = catchPresenterException(() -> registerMember(person));
     }
 
     @Then("a registered member should be:")
@@ -58,7 +55,7 @@ public class MemberStepDefinitions {
 
         assertThat(lastRegisteredMember).usingRecursiveComparison().isEqualTo(expectedMember);
 
-        Optional<Member> optionalMember = world.memberInMemoryRepository.findById(lastGeneratedId);
+        Optional<Member> optionalMember = memberInMemoryRepository.findById(lastGeneratedId);
         assertThat(optionalMember).isPresent();
         assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }
@@ -75,9 +72,9 @@ public class MemberStepDefinitions {
                 .email(existingMember.get("email"))
                 .build();
 
-        Optional.ofNullable(existingMember.get("id")).map(MemberId::from).ifPresent(world.memberInMemoryRepository::setNextGeneratedId);
+        Optional.ofNullable(existingMember.get("id")).map(MemberId::from).ifPresent(memberInMemoryRepository::setNextGeneratedId);
 
-        var registerMemberUseCase = new RegisterMemberUseCase(world.memberInMemoryRepository);
+        var registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
         this.lastRegisteredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
     }
 
