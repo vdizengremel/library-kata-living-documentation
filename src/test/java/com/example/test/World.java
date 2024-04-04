@@ -13,13 +13,13 @@ public class World {
     public World() {
         timeService = Mockito.mock();
         memberInMemoryRepository = new MemberInMemoryRepository();
+        bookInMemoryRepository = new BookInMemoryRepository();
     }
 
-    public BookInMemoryRepository bookInMemoryRepository;
+    public final BookInMemoryRepository bookInMemoryRepository;
 
-    public MemberInMemoryRepository memberInMemoryRepository;
+    public final MemberInMemoryRepository memberInMemoryRepository;
 
-    public BorrowingInMemoryRepository borrowingInMemoryRepository;
-    public TimeService timeService;
+    public final TimeService timeService;
     public LocalDate currentDate;
 }

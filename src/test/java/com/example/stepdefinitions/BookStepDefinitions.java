@@ -7,6 +7,7 @@ import com.example.demo.core.usecases.RegisterABookUseCase;
 import com.example.demo.infrastructure.book.BookInMemoryRepository;
 import com.example.test.PresenterException;
 import com.example.test.World;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -25,31 +26,31 @@ public class BookStepDefinitions {
 
     private PresenterException thrownException;
     private Book returnedBook;
+    private final RegisterABookUseCase registerABookUseCase;
+
 
     public BookStepDefinitions(World world) {
-        this.bookInMemoryRepository = new BookInMemoryRepository();
-        world.bookInMemoryRepository = this.bookInMemoryRepository;
+        this.bookInMemoryRepository = world.bookInMemoryRepository;
+        registerABookUseCase = new RegisterABookUseCase(bookInMemoryRepository);
     }
 
     @Given("already registered books:")
-    public void alreadyRegisteredBooks(List<Map<String, String>> registeredBooks) {
+    public void alreadyRegisteredBooks(List<RegisterABookCommand> registeredBooks) {
         registeredBooks.forEach(this::registerBook);
     }
 
     @When("registering new book:")
-    public void registeringNewBook(List<Map<String, String>> registeredBook) {
+    public void registeringNewBook(List<RegisterABookCommand> registeredBook) {
         this.thrownException = catchPresenterException(() -> registerBook(registeredBook.getFirst()));
     }
 
     @Then("this book should be registered:")
-    public void thisBookShouldBeRegistered(List<Map<String, String>> expected) {
-        var expectedBookData = expected.getFirst();
-        ISBN isbn = new ISBN(expectedBookData.get("isbn"));
+    public void thisBookShouldBeRegistered(List<Book> expected) {
+        var expectedBook = expected.getFirst();
+        ISBN isbn = expectedBook.getIsbn();
 
         Optional<Book> optionalBook = bookInMemoryRepository.findByIsbn(isbn);
         assertThat(optionalBook).isPresent();
-
-        Book expectedBook = new Book(isbn, expectedBookData.get("title"), expectedBookData.get("author"));
         assertThat(optionalBook.get()).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
@@ -58,15 +59,17 @@ public class BookStepDefinitions {
         assertThat(thrownException).hasMessage(expectedMessage);
     }
 
-    private void registerBook(Map<String, String> bookData) {
-        var useCase = new RegisterABookUseCase(bookInMemoryRepository);
-        var command = RegisterABookCommand.builder()
+    private void registerBook(RegisterABookCommand command) {
+        registerABookUseCase.execute(command, new RegisterABookPresenterForTest());
+    }
+
+    @DataTableType
+    public RegisterABookCommand mapRowToRegisterABookCommand(Map<String, String> bookData) {
+        return RegisterABookCommand.builder()
                 .isbn(bookData.get("isbn"))
                 .title(bookData.get("title"))
                 .author(bookData.get("author"))
                 .build();
-
-        useCase.execute(command, new RegisterABookPresenterForTest());
     }
 
     @When("getting book with ISBN {}")
@@ -76,9 +79,14 @@ public class BookStepDefinitions {
     }
 
     @Then("the following book should be returned:")
-    public void theFollowingBookShouldBeReturned(List<Map<String, String>> expected) {
-        Map<String, String> bookData = expected.getFirst();
-        assertThat(returnedBook).usingRecursiveComparison().isEqualTo(new Book(new ISBN(bookData.get("isbn")), bookData.get("title"), bookData.get("author")));
+    public void theFollowingBookShouldBeReturned(List<Book> expected) {
+        Book expectedBook = expected.getFirst();
+        assertThat(returnedBook).usingRecursiveComparison().isEqualTo(expectedBook);
+    }
+
+    @DataTableType
+    public Book mapRowToBook(Map<String, String> bookData) {
+        return new Book(new ISBN(bookData.get("isbn")), bookData.get("title"), bookData.get("author"));
     }
 
     @Then("the returning of book should fail because {}")
@@ -88,7 +96,7 @@ public class BookStepDefinitions {
 
     @Getter
     @Builder
-    static class RegisterABookCommand implements RegisterABookUseCase.RegisterABookCommand {
+    public static class RegisterABookCommand implements RegisterABookUseCase.RegisterABookCommand {
         String isbn;
         String title;
         String author;
