@@ -1,5 +1,6 @@
 package com.example.stepdefinitions;
 
+import com.example.demo.core.domain.TimeService;
 import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.domain.member.Borrowing;
 import com.example.demo.core.domain.member.BorrowingError;
@@ -10,6 +11,7 @@ import com.example.demo.core.usecases.ReturnABookUseCase;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
 import com.example.test.PresenterException;
 import com.example.test.World;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -29,10 +31,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BorrowingStepDefinitions {
     private final World world;
     private final BorrowingInMemoryRepository borrowingInMemoryRepository;
+    private final TimeService timeService;
     private PresenterException thrownException;
 
     public BorrowingStepDefinitions(World world) {
         this.world = world;
+        this.timeService = world.timeService;
         borrowingInMemoryRepository = new BorrowingInMemoryRepository();
     }
 
@@ -48,16 +52,20 @@ public class BorrowingStepDefinitions {
     }
 
     @Then("borrowing should be saved with:")
-    public void borrowingShouldBeSavedWith(List<Map<String, String>> borrowings) {
-        var borrowingData = borrowings.getFirst();
-        var borrowingId = BorrowingId.fromString(borrowingData.get("id"));
+    public void borrowingShouldBeSavedWith(List<Borrowing> borrowings) {
+        var expectedBorrowing = borrowings.getFirst();
+        var borrowingId = expectedBorrowing.getId();
 
         Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(borrowingId);
         assertThat(optionalBorrowing).isPresent();
-        LocalDate returnDate = Optional.ofNullable(borrowingData.get("return date")).map(data -> LocalDate.parse(data, DateTimeFormatter.ISO_DATE)).orElse(null);
-        Borrowing expectedBorrowing = new Borrowing(borrowingId, MemberId.from(borrowingData.get("member id")), new ISBN(borrowingData.get("isbn")), LocalDate.parse(borrowingData.get("start date"), DateTimeFormatter.ISO_DATE), LocalDate.parse(borrowingData.get("max authorized return date"), DateTimeFormatter.ISO_DATE), returnDate);
         assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(expectedBorrowing);
-        assertThat(optionalBorrowing.get()).usingRecursiveComparison().comparingOnlyFields("expectedReturnDate").isEqualTo(expectedBorrowing);
+    }
+
+    @DataTableType
+    public Borrowing mapRowToBorrowing(Map<String, String>borrowingData) {
+        var borrowingId = BorrowingId.fromString(borrowingData.get("id"));
+        LocalDate returnDate = Optional.ofNullable(borrowingData.get("return date")).map(data -> LocalDate.parse(data, DateTimeFormatter.ISO_DATE)).orElse(null);
+        return new Borrowing(borrowingId, MemberId.from(borrowingData.get("member id")), new ISBN(borrowingData.get("isbn")), LocalDate.parse(borrowingData.get("start date"), DateTimeFormatter.ISO_DATE), LocalDate.parse(borrowingData.get("max authorized return date"), DateTimeFormatter.ISO_DATE), returnDate);
     }
 
     @Then("borrowing with id {} should have return date {}")
@@ -85,22 +93,22 @@ public class BorrowingStepDefinitions {
     }
 
     private void borrowABook(String memberId, String isbn) {
-        BorrowABookUseCase borrowABookUseCase = new BorrowABookUseCase(world.memberInMemoryRepository, world.bookInMemoryRepository, borrowingInMemoryRepository, world.timeService);
+        BorrowABookUseCase borrowABookUseCase = new BorrowABookUseCase(world.memberInMemoryRepository, world.bookInMemoryRepository, borrowingInMemoryRepository, timeService);
         borrowABookUseCase.execute(new BorrowABookCommandForTest(isbn, memberId), new BorrowABookPresenterForTest());
     }
 
     @Given("member with id {} has already borrowed following books at {} with ISBN:")
     public void memberWithIdCAcaCCDdAHasAlreadyBorrowedFollowingBooksAtWithISBN(String memberId, String borrowingDateAsString, List<String> isbns) {
         var borrowingDate = LocalDate.parse(borrowingDateAsString, DateTimeFormatter.ISO_DATE);
-        Mockito.when(world.timeService.getCurrentDate()).thenReturn(borrowingDate);
+        Mockito.when(timeService.getCurrentDate()).thenReturn(borrowingDate);
 
         isbns.forEach(isbn -> this.borrowABook(memberId, isbn));
-        Mockito.when(world.timeService.getCurrentDate()).thenReturn(world.currentDate);
+        Mockito.when(timeService.getCurrentDate()).thenReturn(world.currentDate);
     }
 
     @When("the borrowed book with ISBN {} is returned")
     public void theBorrowedBookWithISBNIsReturned(String isbn) {
-        ReturnABookUseCase returnABookUseCase = new ReturnABookUseCase(borrowingInMemoryRepository, world.timeService);
+        ReturnABookUseCase returnABookUseCase = new ReturnABookUseCase(borrowingInMemoryRepository, timeService);
         thrownException = catchPresenterException(() -> returnABookUseCase.execute(() -> isbn, new ReturnABookPresenterForTest()));
     }
 

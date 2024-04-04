@@ -7,6 +7,7 @@ import com.example.demo.core.usecases.RegisterMemberUseCase;
 import com.example.demo.infrastructure.member.MemberInMemoryRepository;
 import com.example.test.PresenterException;
 import com.example.test.World;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -22,11 +23,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberStepDefinitions {
     private final MemberInMemoryRepository memberInMemoryRepository;
+    private final RegisterMemberUseCase registerMemberUseCase;
     private PresenterException thrownException;
-    private Member lastRegisteredMember;
 
-    public MemberStepDefinitions(World world){
+    public MemberStepDefinitions(World world) {
         memberInMemoryRepository = world.memberInMemoryRepository;
+        this.registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
     }
 
 
@@ -48,16 +50,17 @@ public class MemberStepDefinitions {
     }
 
     @Then("a registered member should be:")
-    public void aMemberShouldBeRegisteredWith(List<Map<String, String>> registeredMember) {
-        var member = registeredMember.getFirst();
-        MemberId lastGeneratedId = MemberId.from(member.get("id"));
-        Member expectedMember = new Member(lastGeneratedId, member.get("firstname"), member.get("lastname"), member.get("email"), MemberStatus.NEW_MEMBER);
+    public void aMemberShouldBeRegisteredWith(List<Member> registeredMember) {
+        var expectedMember = registeredMember.getFirst();
 
-        assertThat(lastRegisteredMember).usingRecursiveComparison().isEqualTo(expectedMember);
-
-        Optional<Member> optionalMember = memberInMemoryRepository.findById(lastGeneratedId);
+        Optional<Member> optionalMember = memberInMemoryRepository.findById(expectedMember.getId());
         assertThat(optionalMember).isPresent();
         assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
+    }
+
+    @DataTableType
+    public Member mapRowToMember(Map<String, String> memberData) {
+        return new Member(MemberId.from(memberData.get("id")), memberData.get("firstname"), memberData.get("lastname"), memberData.get("email"), MemberStatus.NEW_MEMBER);
     }
 
     @Then("the member registration should fail because {}")
@@ -74,8 +77,7 @@ public class MemberStepDefinitions {
 
         Optional.ofNullable(existingMember.get("id")).map(MemberId::from).ifPresent(memberInMemoryRepository::setNextGeneratedId);
 
-        var registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
-        this.lastRegisteredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
+        registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
     }
 
     @Getter
