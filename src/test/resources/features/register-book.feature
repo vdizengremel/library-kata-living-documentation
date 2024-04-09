@@ -4,17 +4,11 @@ Feature: Register a book
   As a librarian
   I want to register books
 
-
   Scenario: Book does not exist
     Given already registered books:
-      | isbn       | title                                    | author               |
-      | 0747532745 | Harry Potter and the Philosopher's Stone | Rowling, J. K.       |
-      | 0553897845 | A Song of Ice and Fire                   | Martin, George R. R. |
-
-    When registering new book:
-      | isbn       | title    | author             |
-      | 2253159913 | Elantris | Sanderson, Brandon |
-
+      | Harry Potter    |
+      | Game of thrones |
+    When registering the book Elantris
     Then this book should be registered:
       | isbn       | title    | author             |
       | 2253159913 | Elantris | Sanderson, Brandon |
@@ -22,16 +16,7 @@ Feature: Register a book
 
   Scenario: Book already registered with same ISBN
     Given already registered books:
-      | isbn       | title                                    | author               |
-      | 0747532745 | Harry Potter and the Philosopher's Stone | Rowling, J. K.       |
-      | 0553897845 | A Song of Ice and Fire                   | Martin, George R. R. |
-
-    When registering new book:
-      | isbn       | title        | author  |
-      | 0553897845 | Harry Potter | Rowling |
-
-    Then this book should be registered:
-      | isbn       | title                                    | author         |
-      | 0747532745 | Harry Potter and the Philosopher's Stone | Rowling, J. K. |
-
-    And the book registration should fail because a book with same ISBN is already registered
+      | Harry Potter    |
+      | Game of thrones |
+    When registering the book Harry Potter
+    Then the book registration should fail because a book with same ISBN is already registered

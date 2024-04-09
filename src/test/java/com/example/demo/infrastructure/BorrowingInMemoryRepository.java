@@ -57,6 +57,12 @@ public class BorrowingInMemoryRepository extends AbstractInMemoryRepository<Borr
                 .filter(Borrowing::isInProgress).toList();
     }
 
+    public List<Borrowing> findFinishedByMemberId(MemberId memberId) {
+        return streamData()
+                .filter(borrowing -> borrowing.isMadeBy(memberId))
+                .filter(borrowing1 -> !borrowing1.isInProgress()).toList();
+    }
+
     @Override
     public Optional<Borrowing> findInProgressForIsbn(ISBN isbn) {
         return streamData()

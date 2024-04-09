@@ -5,15 +5,18 @@ import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.usecases.GetBookByIsbnUseCase;
 import com.example.demo.core.usecases.RegisterABookUseCase;
 import com.example.demo.infrastructure.book.BookInMemoryRepository;
+import com.example.test.BookData;
 import com.example.test.PresenterException;
 import com.example.test.World;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,21 +30,24 @@ public class BookStepDefinitions {
     private PresenterException thrownException;
     private Book returnedBook;
     private final RegisterABookUseCase registerABookUseCase;
+    private final BookData bookData;
 
 
     public BookStepDefinitions(World world) {
         this.bookInMemoryRepository = world.bookInMemoryRepository;
         registerABookUseCase = new RegisterABookUseCase(bookInMemoryRepository);
+        bookData = world.bookData;
     }
 
     @Given("already registered books:")
-    public void alreadyRegisteredBooks(List<RegisterABookCommand> registeredBooks) {
-        registeredBooks.forEach(this::registerBook);
+    public void alreadyRegisteredBooks(List<String> registeredBooks) {
+        registeredBooks.stream().map(bookData::getRegisterABookCommandByBookName).forEach(this::registerBook);
     }
 
-    @When("registering new book:")
-    public void registeringNewBook(List<RegisterABookCommand> registeredBook) {
-        this.thrownException = catchPresenterException(() -> registerBook(registeredBook.getFirst()));
+    @When("registering the book {}")
+    public void registeringTheBook(String bookName) {
+        var command = bookData.getRegisterABookCommandByBookName(bookName);
+        this.thrownException = catchPresenterException(() -> registerBook(command));
     }
 
     @Then("this book should be registered:")
@@ -61,15 +67,6 @@ public class BookStepDefinitions {
 
     private void registerBook(RegisterABookCommand command) {
         registerABookUseCase.execute(command, new RegisterABookPresenterForTest());
-    }
-
-    @DataTableType
-    public RegisterABookCommand mapRowToRegisterABookCommand(Map<String, String> bookData) {
-        return RegisterABookCommand.builder()
-                .isbn(bookData.get("isbn"))
-                .title(bookData.get("title"))
-                .author(bookData.get("author"))
-                .build();
     }
 
     @When("getting book with ISBN {}")

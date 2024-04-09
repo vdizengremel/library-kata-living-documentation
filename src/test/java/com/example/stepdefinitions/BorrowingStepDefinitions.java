@@ -9,9 +9,10 @@ import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.usecases.BorrowABookUseCase;
 import com.example.demo.core.usecases.ReturnABookUseCase;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
+import com.example.test.BookData;
+import com.example.test.MemberPersonas;
 import com.example.test.PresenterException;
 import com.example.test.World;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -24,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.test.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,59 +34,67 @@ public class BorrowingStepDefinitions {
     private final World world;
     private final BorrowingInMemoryRepository borrowingInMemoryRepository;
     private final TimeService timeService;
+    private final MemberPersonas memberPersonas;
+    private final BookData bookData;
+
     private PresenterException thrownException;
+
 
     public BorrowingStepDefinitions(World world) {
         this.world = world;
         this.timeService = world.timeService;
+        memberPersonas = world.memberPersonas;
+        bookData = world.bookData;
         borrowingInMemoryRepository = new BorrowingInMemoryRepository();
     }
 
-    @Given("next generated borrowing ids will be:")
-    public void nextGeneratedBorrowingIdsWillBe(List<String> uuids) {
-        var borrowingIds = uuids.stream().map(BorrowingId::fromString).toList();
-        borrowingInMemoryRepository.setNextGeneratedIds(borrowingIds);
-    }
+    @When("{} borrows {}")
+    public void memberBorrowsTheBook(String memberName, String bookName) {
+        String isbn;
+        if (bookName.contains("unknown")) {
+            isbn = "1112223333";
+        } else {
+            isbn = bookData.getISBNFor(bookName);
+        }
 
-    @When("member with id {} borrow the book with ISBN {}")
-    public void memberWithIdBorrowTheBookWithISBN(String memberId, String isbn) {
+        String memberId;
+
+        if ("unknown member".equals(memberName)) {
+            memberId = UUID.randomUUID().toString();
+        } else {
+            memberId = memberPersonas.getIdFor(memberName);
+        }
+
         thrownException = catchPresenterException(() -> borrowABook(memberId, isbn));
     }
 
-    @Then("borrowing should be saved with:")
-    public void borrowingShouldBeSavedWith(List<Borrowing> borrowings) {
-        var expectedBorrowing = borrowings.getFirst();
-        var borrowingId = expectedBorrowing.getId();
+    @Then("{} should have current borrowing(s):")
+    public void memberShouldHaveCurrentBorrowings(String memberName, List<Map<String, String>> borrowingsData) {
+        var memberId = MemberId.from(memberPersonas.getIdFor(memberName));
+        List<Borrowing> inProgressByMemberId = borrowingInMemoryRepository.findInProgressByMemberId(memberId);
 
-        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(borrowingId);
-        assertThat(optionalBorrowing).isPresent();
-        assertThat(optionalBorrowing.get()).usingRecursiveComparison().isEqualTo(expectedBorrowing);
+        var expectedBorrowings = borrowingsData.stream().map(borrowingData -> mapRowToBorrowing(memberId, borrowingData)).toList();
+
+        assertThat(inProgressByMemberId)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .containsExactlyInAnyOrder(expectedBorrowings.toArray(Borrowing[]::new));
     }
 
-    @DataTableType
-    public Borrowing mapRowToBorrowing(Map<String, String>borrowingData) {
-        var borrowingId = BorrowingId.fromString(borrowingData.get("id"));
-        LocalDate returnDate = Optional.ofNullable(borrowingData.get("return date")).map(data -> LocalDate.parse(data, DateTimeFormatter.ISO_DATE)).orElse(null);
-        return new Borrowing(borrowingId, MemberId.from(borrowingData.get("member id")), new ISBN(borrowingData.get("isbn")), LocalDate.parse(borrowingData.get("start date"), DateTimeFormatter.ISO_DATE), LocalDate.parse(borrowingData.get("max authorized return date"), DateTimeFormatter.ISO_DATE), returnDate);
+    public Borrowing mapRowToBorrowing(MemberId memberId, Map<String, String> borrowingData) {
+        var borrowingId = BorrowingId.fromString(UUID.randomUUID().toString());
+        LocalDate returnDate = stringToLocalDate(borrowingData.get("return date"));
+
+        return new Borrowing(borrowingId, memberId, new ISBN(bookData.getISBNFor(borrowingData.get("title"))), stringToLocalDate(borrowingData.get("start date")), stringToLocalDate(borrowingData.get("max authorized return date")), returnDate);
     }
 
-    @Then("borrowing with id {} should have return date {}")
-    public void borrowingShouldBeSavedWith(String borrowingIdAsString, String returnDateAsString) {
-        var borrowingId = BorrowingId.fromString(borrowingIdAsString);
-
-        Optional<Borrowing> optionalBorrowing = borrowingInMemoryRepository.findById(borrowingId);
-        assertThat(optionalBorrowing).isPresent();
-
-        LocalDate expectedReturnDate = Optional.ofNullable(returnDateAsString)
-                .filter(value -> !value.equals("null"))
-                .map(value -> LocalDate.parse(value, DateTimeFormatter.ISO_DATE)).orElse(null);
-
-        assertThat(optionalBorrowing.get()).extracting("returnDate").isEqualTo(expectedReturnDate);
+    private LocalDate stringToLocalDate(String date) {
+        return Optional.ofNullable(date).map(data -> LocalDate.parse(data, DateTimeFormatter.ISO_DATE)).orElse(null);
     }
 
-    @Given("member with id {} has already borrowed following books with ISBN:")
-    public void memberWithIdCAcaCCDdAHasAlreadyBorrowedFollowingBooksWithISBN(String memberId, List<String> isbns) {
-        isbns.forEach(isbn -> borrowABook(memberId, isbn));
+    @Given("{} has already borrowed:")
+    public void memberWithIdHasAlreadyBorrowedFollowingBooks(String memberName, List<String> bookNames) {
+        var memberId = memberPersonas.getIdFor(memberName);
+        bookNames.stream().map(bookData::getISBNFor).forEach(isbn -> borrowABook(memberId, isbn));
     }
 
     @Then("the borrowing should fail because {}")
@@ -97,17 +107,19 @@ public class BorrowingStepDefinitions {
         borrowABookUseCase.execute(new BorrowABookCommandForTest(isbn, memberId), new BorrowABookPresenterForTest());
     }
 
-    @Given("member with id {} has already borrowed following books at {} with ISBN:")
-    public void memberWithIdCAcaCCDdAHasAlreadyBorrowedFollowingBooksAtWithISBN(String memberId, String borrowingDateAsString, List<String> isbns) {
+    @Given("{} has already borrowed following books at {}:")
+    public void memberHasAlreadyBorrowedFollowingBooksAt(String memberName, String borrowingDateAsString, List<String> bookNames) {
         var borrowingDate = LocalDate.parse(borrowingDateAsString, DateTimeFormatter.ISO_DATE);
         Mockito.when(timeService.getCurrentDate()).thenReturn(borrowingDate);
 
-        isbns.forEach(isbn -> this.borrowABook(memberId, isbn));
+        var memberId = memberPersonas.getIdFor(memberName);
+        bookNames.stream().map(bookData::getISBNFor).forEach(isbn -> this.borrowABook(memberId, isbn));
         Mockito.when(timeService.getCurrentDate()).thenReturn(world.currentDate);
     }
 
-    @When("the borrowed book with ISBN {} is returned")
-    public void theBorrowedBookWithISBNIsReturned(String isbn) {
+    @When("{} is returned")
+    public void bookIsReturned(String bookName) {
+        var isbn = bookData.getISBNFor(bookName);
         ReturnABookUseCase returnABookUseCase = new ReturnABookUseCase(borrowingInMemoryRepository, timeService);
         thrownException = catchPresenterException(() -> returnABookUseCase.execute(() -> isbn, new ReturnABookPresenterForTest()));
     }
@@ -115,6 +127,17 @@ public class BorrowingStepDefinitions {
     @Then("returning the book should fail because {}")
     public void returningTheBookShouldFailBecauseNoBorrowingExistsForThisBook(String expectedMessage) {
         assertThat(thrownException).hasMessage(expectedMessage);
+    }
+
+    @Then("{} should have past borrowings:")
+    public void janeShouldHavePastBorrowings(String memberName, List<Map<String, String>> pastBorrowingsData) {
+        var memberId = MemberId.from(memberPersonas.getIdFor(memberName));
+        List<Borrowing> finishedByMemberId = borrowingInMemoryRepository.findFinishedByMemberId(memberId);
+        var expectedBorrowings = pastBorrowingsData.stream().map(borrowingData -> mapRowToBorrowing(memberId, borrowingData)).toList();
+
+        assertThat(finishedByMemberId)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .containsExactlyInAnyOrder(expectedBorrowings.toArray(Borrowing[]::new));
     }
 
     @Getter

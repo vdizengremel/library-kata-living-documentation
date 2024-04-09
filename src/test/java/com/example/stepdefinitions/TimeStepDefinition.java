@@ -13,7 +13,6 @@ public class TimeStepDefinition {
     private final World world;
 
     public TimeStepDefinition(World world) {
-
         this.world = world;
     }
 

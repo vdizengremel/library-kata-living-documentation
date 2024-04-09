@@ -5,9 +5,9 @@ import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberStatus;
 import com.example.demo.core.usecases.RegisterMemberUseCase;
 import com.example.demo.infrastructure.member.MemberInMemoryRepository;
+import com.example.test.MemberPersonas;
 import com.example.test.PresenterException;
 import com.example.test.World;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -24,23 +24,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MemberStepDefinitions {
     private final MemberInMemoryRepository memberInMemoryRepository;
     private final RegisterMemberUseCase registerMemberUseCase;
+    private final MemberPersonas memberPersonas;
     private PresenterException thrownException;
+    private MemberId lastMemberId;
+
 
     public MemberStepDefinitions(World world) {
         memberInMemoryRepository = world.memberInMemoryRepository;
+        memberPersonas = world.memberPersonas;
         this.registerMemberUseCase = new RegisterMemberUseCase(memberInMemoryRepository);
     }
 
-
-    @Given("next generated member ids will be:")
-    public void nextGeneratedMemberIdsWillBe(List<String> uuids) {
-        var memberIds = uuids.stream().map(MemberId::from).toList();
-        memberInMemoryRepository.setNextGeneratedIds(memberIds);
-    }
-
-    @Given("already registered members:")
-    public void followingMembersExist(List<Map<String, String>> existingMembers) {
-        existingMembers.forEach(this::registerMember);
+    @Given("{} is a registered member")
+    public void followingMemberExist(String name) {
+        AddMemberUseCaseCommandForTest command = memberPersonas.findByName(name);
+        Member registeredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
+        memberPersonas.keepIdFor(name, registeredMember.getId().toValueString());
     }
 
     @When("a person registers with information:")
@@ -49,23 +48,30 @@ public class MemberStepDefinitions {
         thrownException = catchPresenterException(() -> registerMember(person));
     }
 
-    @Then("a registered member should be:")
-    public void aMemberShouldBeRegisteredWith(List<Member> registeredMember) {
-        var expectedMember = registeredMember.getFirst();
+    @Then("last registered member should be:")
+    public void lastMemberShouldBeRegisteredWith(List<Map<String, String>> registeredMembersData) {
+        var memberData = registeredMembersData.getFirst();
+        var expectedMember = new Member(lastMemberId, memberData.get("firstname"), memberData.get("lastname"), memberData.get("email"), MemberStatus.NEW_MEMBER);
 
-        Optional<Member> optionalMember = memberInMemoryRepository.findById(expectedMember.getId());
+        Optional<Member> optionalMember = memberInMemoryRepository.findById(lastMemberId);
         assertThat(optionalMember).isPresent();
         assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
-    }
-
-    @DataTableType
-    public Member mapRowToMember(Map<String, String> memberData) {
-        return new Member(MemberId.from(memberData.get("id")), memberData.get("firstname"), memberData.get("lastname"), memberData.get("email"), MemberStatus.NEW_MEMBER);
     }
 
     @Then("the member registration should fail because {}")
     public void theResultShouldBeAnErrorIndicatingAMemberWithSameEmailExists(String expectingMessage) {
         assertThat(thrownException).hasMessage(expectingMessage);
+    }
+
+    @Then("{} should have not changed")
+    public void mattShouldHaveNotChanged(String memberName) {
+        MemberId memberId = MemberId.from(memberPersonas.getIdFor(memberName));
+        Optional<Member> optionalMember = memberInMemoryRepository.findById(memberId);
+        assertThat(optionalMember).isPresent();
+
+        AddMemberUseCaseCommandForTest command = memberPersonas.findByName(memberName);
+        Member expectedMember = new Member(memberId, command.firstName, command.lastName, command.email, MemberStatus.NEW_MEMBER);
+        assertThat(optionalMember.get()).usingRecursiveComparison().isEqualTo(expectedMember);
     }
 
     private void registerMember(Map<String, String> existingMember) {
@@ -77,12 +83,13 @@ public class MemberStepDefinitions {
 
         Optional.ofNullable(existingMember.get("id")).map(MemberId::from).ifPresent(memberInMemoryRepository::setNextGeneratedId);
 
-        registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
+        var registeredMember = registerMemberUseCase.execute(command, new AddMemberUseCasePresenterForTest());
+        lastMemberId = registeredMember.getId();
     }
 
     @Getter
     @Builder
-    static class AddMemberUseCaseCommandForTest implements RegisterMemberUseCase.AddMemberUseCaseCommand {
+    public static class AddMemberUseCaseCommandForTest implements RegisterMemberUseCase.AddMemberUseCaseCommand {
         private String firstName;
         private String lastName;
         private String email;
