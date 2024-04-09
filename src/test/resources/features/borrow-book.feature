@@ -1,4 +1,5 @@
-@section-Borrowing
+@subsection-Borrowing
+@order-30
 Feature: Borrow a book
   In order to read a book anywhere
   As a registered member
@@ -13,6 +14,7 @@ Feature: Borrow a book
       | Game of thrones |
       | Dune            |
 
+  @happy-path
   Scenario: Member without borrowing can borrow book
   A book is borrowed for 3 weeks.
 

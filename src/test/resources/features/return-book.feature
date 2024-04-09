@@ -1,9 +1,10 @@
-@section-Borrowing
+@subsection-Borrowing
 Feature: Return a book
   In order to keep borrowing books
   As a member
   I want to return borrowed books
 
+  @happy-path
   Scenario: Return book when book is borrowed
     Given current time is 2024-03-08
     And Jane is a registered member

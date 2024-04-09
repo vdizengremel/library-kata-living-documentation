@@ -1,9 +1,11 @@
-@section-Book
+@subsection-Book
+@order-10
 Feature: Register a book
   In order to be an attractive library
   As a librarian
   I want to register books
 
+  @happy-path
   Scenario: Book does not exist
     Given already registered books:
       | Harry Potter    |

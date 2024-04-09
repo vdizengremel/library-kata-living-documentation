@@ -1,9 +1,11 @@
-@section-Member
+@subsection-Member
+@order-20
 Feature: Register a member
   In order to be a library member and be allowed to borrow books
   As a person
   I want to register
 
+  @happy-path
   Scenario: Registration with new email
     Given Jane is a registered member
     And John is a registered member

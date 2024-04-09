@@ -1,9 +1,10 @@
-@section-Book
+@subsection-Book
 Feature: Get book by ISBN
   In order to get book information
   As a librarian
   I want to get book by ISBN
 
+  @happy-path
   Scenario: Book exists
     Given already registered books:
       | Elantris        |

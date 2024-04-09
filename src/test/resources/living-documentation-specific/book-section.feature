@@ -1,5 +1,4 @@
-@section-Book
-#@order-20
+@subsection-Book
 Feature: Book
   This is the book section.
   Scenario: Root

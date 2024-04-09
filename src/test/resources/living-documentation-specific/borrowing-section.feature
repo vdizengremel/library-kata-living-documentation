@@ -1,5 +1,4 @@
-@section-Borrowing
-#@order-20
-Feature: Book
+@subsection-Borrowing
+Feature: Borrowing
   This is the borrowing section.
   Scenario: Root

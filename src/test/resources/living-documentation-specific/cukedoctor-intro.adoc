@@ -1,9 +1,10 @@
-= *This is a sample introduction chapter made by VIDI*
+= *Introduction*
 
-Introduction chapter is the place where you can insert custom content for your living documentation.
+This document is a living documentation of the library kata.
+It is completely generated.
 
-== Sub section
-Introduction chapter can have subsections
+== Context
+Documentation is generated with cukedoctor and custom code for glossary.
 
 = *Reference data*
 

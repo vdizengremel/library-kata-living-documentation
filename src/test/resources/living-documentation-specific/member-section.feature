@@ -1,5 +1,4 @@
-@section-Member
-#@order-20
+@subsection-Member
 Feature: Member
   This is the member section.
   Scenario: Root
