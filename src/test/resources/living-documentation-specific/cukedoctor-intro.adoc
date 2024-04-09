@@ -2,5 +2,18 @@
 
 Introduction chapter is the place where you can insert custom content for your living documentation.
 
-=== Sub section
+== Sub section
 Introduction chapter can have subsections
+
+= *Reference data*
+
+== Members
+[source,hocon]
+----
+include::../testdata/members.conf[]
+----
+
+== Books
+----
+include::../testdata/books.conf[]
+----

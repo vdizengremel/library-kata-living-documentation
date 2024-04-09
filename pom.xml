@@ -145,6 +145,7 @@
 					<numbered>true</numbered>
 					<docVersion>${project.version}</docVersion>
 					<documentTitle>Library kata documentation</documentTitle>
+					<hideSummarySection>true</hideSummarySection>
 				</configuration>
 				<executions>
 					<execution>
