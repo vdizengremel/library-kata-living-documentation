@@ -7,7 +7,7 @@ import org.springframework.http.HttpHeaders;
 
 public class HttpEntityFactory {
     @NotNull
-    static HttpEntity<String> httpEntityFomJson(@Language("JSON") String requestJson) {
+    public static HttpEntity<String> httpEntityFomJson(@Language("JSON") String requestJson) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
