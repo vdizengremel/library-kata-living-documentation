@@ -1,4 +1,4 @@
-package com.example.stepdefinitions;
+package com.example.bdd.feature.stepdefinitions;
 
 import com.example.demo.core.domain.TimeService;
 import com.example.demo.core.domain.book.ISBN;
@@ -9,10 +9,10 @@ import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.usecases.BorrowABookUseCase;
 import com.example.demo.core.usecases.ReturnABookUseCase;
 import com.example.demo.infrastructure.BorrowingInMemoryRepository;
-import com.example.test.BookData;
-import com.example.test.MemberPersonas;
-import com.example.test.PresenterException;
-import com.example.test.World;
+import com.example.bdd.BookData;
+import com.example.bdd.MemberPersonas;
+import com.example.bdd.feature.PresenterException;
+import com.example.bdd.feature.World;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.example.test.CucumberUtils.catchPresenterException;
+import static com.example.bdd.feature.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BorrowingStepDefinitions {

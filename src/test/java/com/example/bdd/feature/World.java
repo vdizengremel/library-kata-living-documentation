@@ -1,9 +1,10 @@
-package com.example.test;
+package com.example.bdd.feature;
 
 import com.example.demo.core.domain.TimeService;
-import com.example.demo.infrastructure.BorrowingInMemoryRepository;
 import com.example.demo.infrastructure.book.BookInMemoryRepository;
 import com.example.demo.infrastructure.member.MemberInMemoryRepository;
+import com.example.bdd.BookData;
+import com.example.bdd.MemberPersonas;
 import org.mockito.Mockito;
 
 import java.time.LocalDate;

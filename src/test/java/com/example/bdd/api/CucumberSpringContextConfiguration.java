@@ -1,4 +1,4 @@
-package com.example.bdd;
+package com.example.bdd.api;
 
 import com.example.demo.core.usecases.GetBookByIsbnUseCase;
 import com.example.demo.core.usecases.RegisterABookUseCase;
@@ -11,9 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
-import com.example.demo.DemoApplication;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootContextLoader;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;

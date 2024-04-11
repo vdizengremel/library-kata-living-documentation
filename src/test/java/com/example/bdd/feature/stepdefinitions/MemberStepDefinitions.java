@@ -1,13 +1,13 @@
-package com.example.stepdefinitions;
+package com.example.bdd.feature.stepdefinitions;
 
 import com.example.demo.core.domain.member.Member;
 import com.example.demo.core.domain.member.MemberId;
 import com.example.demo.core.domain.member.MemberStatus;
 import com.example.demo.core.usecases.RegisterMemberUseCase;
 import com.example.demo.infrastructure.member.MemberInMemoryRepository;
-import com.example.test.MemberPersonas;
-import com.example.test.PresenterException;
-import com.example.test.World;
+import com.example.bdd.MemberPersonas;
+import com.example.bdd.feature.PresenterException;
+import com.example.bdd.feature.World;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.example.test.CucumberUtils.catchPresenterException;
+import static com.example.bdd.feature.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberStepDefinitions {

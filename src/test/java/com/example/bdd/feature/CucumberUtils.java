@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.bdd.feature;
 
 public class CucumberUtils {
     public static PresenterException catchPresenterException(Runnable fn) {

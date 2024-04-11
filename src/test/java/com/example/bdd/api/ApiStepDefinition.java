@@ -1,11 +1,10 @@
-package com.example.bdd;
+package com.example.bdd.api;
 
 import com.example.demo.core.usecases.RegisterABookUseCase;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.intellij.lang.annotations.Language;
 import org.json.JSONException;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;

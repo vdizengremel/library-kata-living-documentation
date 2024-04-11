@@ -1,27 +1,25 @@
-package com.example.stepdefinitions;
+package com.example.bdd.feature.stepdefinitions;
 
 import com.example.demo.core.domain.book.Book;
 import com.example.demo.core.domain.book.ISBN;
 import com.example.demo.core.usecases.GetBookByIsbnUseCase;
 import com.example.demo.core.usecases.RegisterABookUseCase;
 import com.example.demo.infrastructure.book.BookInMemoryRepository;
-import com.example.test.BookData;
-import com.example.test.PresenterException;
-import com.example.test.World;
+import com.example.bdd.BookData;
+import com.example.bdd.feature.PresenterException;
+import com.example.bdd.feature.World;
 import io.cucumber.java.DataTableType;
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.example.test.CucumberUtils.catchPresenterException;
+import static com.example.bdd.feature.CucumberUtils.catchPresenterException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookStepDefinitions {

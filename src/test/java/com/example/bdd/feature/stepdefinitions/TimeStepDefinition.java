@@ -1,6 +1,6 @@
-package com.example.stepdefinitions;
+package com.example.bdd.feature.stepdefinitions;
 
-import com.example.test.World;
+import com.example.bdd.feature.World;
 import io.cucumber.java.en.Given;
 import org.mockito.Mockito;
 

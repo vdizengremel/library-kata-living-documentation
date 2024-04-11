@@ -1,6 +1,6 @@
-package com.example.test;
+package com.example.bdd;
 
-import com.example.stepdefinitions.BookStepDefinitions;
+import com.example.bdd.feature.stepdefinitions.BookStepDefinitions;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
