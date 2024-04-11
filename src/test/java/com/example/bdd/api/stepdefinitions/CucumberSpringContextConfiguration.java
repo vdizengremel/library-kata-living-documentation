@@ -1,4 +1,4 @@
-package com.example.bdd.api;
+package com.example.bdd.api.stepdefinitions;
 
 import com.example.demo.core.usecases.GetBookByIsbnUseCase;
 import com.example.demo.core.usecases.RegisterABookUseCase;

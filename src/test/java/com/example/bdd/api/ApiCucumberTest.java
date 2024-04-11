@@ -7,7 +7,7 @@ import org.junit.platform.suite.api.*;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("api-test")
 @ConfigurationParameters({
-        @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "com.example.bdd.api"),
+        @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "com.example.bdd.api.stepdefinitions"),
         @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "json:target/api.json"),
         @ConfigurationParameter(key = Constants.OBJECT_FACTORY_PROPERTY_NAME, value = "io.cucumber.spring.SpringFactory")
 
