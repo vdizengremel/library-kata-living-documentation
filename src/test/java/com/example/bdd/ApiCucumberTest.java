@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 @SelectClasspathResource("api-test")
 @ConfigurationParameters({
         @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME, value = "com.example.bdd"),
-        @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "json:target/cucumber.json"),
+        @ConfigurationParameter(key = Constants.PLUGIN_PROPERTY_NAME, value = "json:target/api.json"),
         @ConfigurationParameter(key = Constants.OBJECT_FACTORY_PROPERTY_NAME, value = "io.cucumber.spring.SpringFactory")
 
 })

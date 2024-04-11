@@ -46,7 +46,7 @@ public class BookControllerTest {
 
             var response = restTemplate.postForEntity("/book/", request, String.class);
 
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
             ISBN isbn = new ISBN("2070541274");
             Optional<Book> optionalBook = bookRepository.findByIsbn(isbn);

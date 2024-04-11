@@ -1,55 +1,73 @@
 package com.example.bdd;
 
+import com.example.demo.core.usecases.RegisterABookUseCase;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.intellij.lang.annotations.Language;
+import org.json.JSONException;
+import org.mockito.Mockito;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.example.demo.entrypoints.HttpEntityFactory.httpEntityFomJson;
+import java.io.UnsupportedEncodingException;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ApiStepDefinition{
+public class ApiStepDefinition {
     private final MockMvc mockMvc;
+    private final RegisterABookUseCase registerABookUseCase;
 
-    public ApiStepDefinition(MockMvc mockMvc) {
+    private String body;
+    private MockHttpServletResponse mvcResult;
+
+    public ApiStepDefinition(MockMvc mockMvc, RegisterABookUseCase registerABookUseCase) {
         this.mockMvc = mockMvc;
+        this.registerABookUseCase = registerABookUseCase;
     }
 
+    @Given("request body is:")
+    public void requestBodyIs(String body) {
+        this.body = body;
+    }
 
-    @When("posting to {}")
-    public void postingTo(String url) throws Exception {
-        var request = httpEntityFomJson("""
-                    {
-                        "isbn": "2070541274",
-                        "title": "Harry Potter",
-                        "author": "J. K. Rowling"
-                    }
-                    """);
-
-        System.out.println("/////////////////////////////////////////////// when posting");
-        var result = mockMvc.perform(MockMvcRequestBuilders.post("/book/")
-                        .header("content-type", "application/json")
-                .content("""
-                    {
-                        "isbn": "2070541274",
-                        "title": "Harry Potter",
-                        "author": "J. K. Rowling"
-                    }
-                    """));
-        result.andDo(result1 -> {
-            var body = result1.getResponse().getContentAsString();
-            assertThat(body).isEqualTo("");
+    @Given("book is not registered yet")
+    public void bookIsNotRegistered() {
+        Mockito.when(registerABookUseCase.execute(Mockito.any(), Mockito.any())).then(invocationOnMock -> {
+            var argument = invocationOnMock.getArgument(1, RegisterABookUseCase.RegisterABookPresenter.class);
+            return argument.presentRegistrationSuccess();
         });
-        result.andExpect( status().isOk());
-//        var response = restTemplate.postForEntity("/book/", request, String.class);
     }
 
+    @Given("book with same ISBN already exists")
+    public void bookWithSameISBNAlreadyExists() {
+        Mockito.when(registerABookUseCase.execute(Mockito.any(), Mockito.any())).then(invocationOnMock -> {
+            var argument = invocationOnMock.getArgument(1, RegisterABookUseCase.RegisterABookPresenter.class);
+            return argument.presentBookAlreadyRegistered();
+        });
+    }
+
+    @When("POST to {}")
+    public void postTo(String url) throws Exception {
+        var result = mockMvc.perform(MockMvcRequestBuilders.post(url)
+                .header("content-type", "application/json")
+                .content(body));
+        mvcResult = result.andReturn().getResponse();
+    }
 
     @Then("the response status code should be {int}")
     public void theResponseStatusCodeShouldBe(int statusCode) {
+        assertThat(mvcResult.getStatus()).isEqualTo(statusCode);
+    }
 
+    @And("the response body should be:")
+    public void theResponseBodyShouldBe(String expectedBody) throws UnsupportedEncodingException, JSONException {
+        String actualBody = mvcResult.getContentAsString();
+        System.out.println("body: " + actualBody);
+        JSONAssert.assertEquals(expectedBody, actualBody, JSONCompareMode.STRICT);
     }
 }
