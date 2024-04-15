@@ -6,7 +6,16 @@ Feature: Register a member
   I want to register
 
   @happy-path
-  Scenario: Registration with new email
+  Scenario: Registration without member
+    When a person registers with information:
+      | firstname | lastname | email                |
+      | Jean      | Dupond   | jean.dupond@smth.com |
+    Then last registered member should be:
+      | firstname | lastname | email                |
+      | Jean      | Dupond   | jean.dupond@smth.com |
+
+  @happy-path
+  Scenario: Registration with existing member and new email
     Given Jane is a registered member
     And John is a registered member
     And Matt is a registered member

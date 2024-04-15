@@ -8,6 +8,7 @@ Feature: Borrow a book
   Background:
     Given current time is 2024-03-06
     And Jane is a registered member
+    And John is a registered member
     And already registered books:
       | Elantris        |
       | Harry Potter    |
@@ -22,6 +23,22 @@ Feature: Borrow a book
     Then Jane should have current borrowings:
       | title    | start date | max authorized return date |
       | Elantris | 2024-03-06 | 2024-03-27                 |
+
+  Scenario: Another member has reach number of authorized borrowing
+  A book is borrowed for 3 weeks.
+    Given John has already borrowed:
+      | Dune            |
+      | Game of thrones |
+      | Harry Potter    |
+    When Jane borrows Elantris
+    Then Jane should have current borrowings:
+      | title    | start date | max authorized return date |
+      | Elantris | 2024-03-06 | 2024-03-27                 |
+    And John should have current borrowings:
+      | title           | start date | max authorized return date |
+      | Dune            | 2024-03-06 | 2024-03-27                 |
+      | Game of thrones | 2024-03-06 | 2024-03-27                 |
+      | Harry Potter    | 2024-03-06 | 2024-03-27                 |
 
   Scenario: Member has reach number of authorized borrowing
   A member can have only 3 borrowings in progress.
