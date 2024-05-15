@@ -24,7 +24,7 @@ Feature: Borrow a book
       | title    | start date | max authorized return date |
       | Elantris | 2024-03-06 | 2024-03-27                 |
 
-  Scenario: Another member has reach number of authorized borrowing
+  Scenario: Another member has reach maximum number of authorized borrowing
   A book is borrowed for 3 weeks.
     Given John has already borrowed:
       | Dune            |
